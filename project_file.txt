@@ -1,0 +1,90 @@
+https://chatgpt.com/share/2bf61289-6ea1-4f90-b06e-3caa98df5a87
+
+
+1. make the students stand up row by row
+
+2. click picture of the row
+
+3. preview the detected faces to the user
+
+4. if the detected faces are satisfactory, submit the picture
+
+5. the submitted pictures should be under processing while the remaining row pictures are being clicked
+
+6. the list of all the students will be stored 
+
+7. after all the images are processed, the user should be able to generate a initial attendance list
+
+8. initial list will be matched against all_students_list to find absentees
+
+7. the absentees and detected but unrecognized faces should be shown to the user for manual recognition
+
+9. the user will be able to mark the manually recognized faces as present
+
+10. the final attendance list will be generated
+
+
+
+Manage image processing queue.
+Ensure that the system processes each submitted image while allowing for additional images to be captured and submitted.
+Database:
+
+Track the processing status of each image.
+6. The List of All the Students Will Be Stored
+Frontend:
+
+Interface for uploading the list of all students.
+Backend:
+
+Endpoint to receive and store the student list (e.g., /api/upload_students_list).
+Database:
+
+Store the list of all students with details (e.g., IDs, names).
+7. After All Images Are Processed, Generate an Initial Attendance List
+Backend:
+
+Analyze all processed images.
+Generate initial attendance based on face recognition results.
+Database:
+
+Store the generated initial attendance list.
+8. Initial List Will Be Matched Against all_students_list to Find Absentees
+Backend:
+
+Compare the initial attendance list with the all_students_list.
+Identify absentees.
+Database:
+
+Store absentee records.
+9. Absentees and Detected but Unrecognized Faces Should Be Shown to the User for Manual Recognition
+Frontend:
+
+UI to display absentees and unrecognized faces.
+Allow manual input for recognizing faces.
+Backend:
+
+Endpoint to retrieve absentee and unrecognized face details (e.g., /api/absentees).
+10. User Will Be Able to Mark the Manually Recognized Faces as Present
+Frontend:
+
+UI for marking faces as present.
+Button or form for submitting manual recognition.
+Backend:
+
+Endpoint to update attendance with manually recognized faces (e.g., /api/mark_present).
+Database:
+
+Update attendance records with manual input.
+11. The Final Attendance List Will Be Generated
+Backend:
+
+Compile the final attendance list including both automatic and manual inputs.
+Generate and return the final list to the frontend.
+Database:
+
+Store the final attendance list.
+Summary of Communication:
+Frontend: User interface interactions, image capture, face detection preview, manual recognition.
+Backend: Handles API requests, image processing, face recognition, attendance generation, status updates.
+Database: Stores student lists, image details, attendance records, processing status, and manual inputs.
+Each step involves a combination of frontend interactions, backend processing, and database management to ensure a smooth and efficient attendance system.

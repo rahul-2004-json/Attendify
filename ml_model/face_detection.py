@@ -1,6 +1,6 @@
 import cv2
 
-image_path = "ml_model\sample_images\maas.jpg"
+image_path = "ml_model/sample_images/rap_rotated.jpg"
 cascade_path = cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
 
 def detect_faces_haar(image_path, cascade_path):

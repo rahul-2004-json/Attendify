@@ -75,24 +75,12 @@ WSGI_APPLICATION = 'attendify.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-
-
-    # 'default': {
-    #     'ENGINE': 'djongo',
-    #     'NAME': 'attendify_data',  # Replace with your MongoDB database name
-    #     'ENFORCE_SCHEMA': False,  # Set to True if you want to enforce schema validation
-    #     'CLIENT': {
-    #         'host': 'localhost',  # Replace with your MongoDB host if different
-    #         'port': 27017,         # Replace with your MongoDB port if different
-    #         # Add additional options here if needed (e.g., authentication)
-    #     }
-    # }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation

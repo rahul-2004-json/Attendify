@@ -20,8 +20,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('api/addStudents/', include('addStudents.urls')),
-    path('image_handler/', include('image_handler.urls')),
-    path('getAttendanceList/', include('getAttendanceList.urls')),
+    path('api/getAttendanceList/', include('getAttendanceList.urls')),
+    path('api/imageHandler/', include('image_handler.urls')),
 ]
 
 #For serving the media files in development by updating urls.py

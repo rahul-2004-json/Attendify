@@ -39,8 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'addStudents',
-    'image_handler',
     'getAttendanceList',
+    'image_handler',
 ]
 
 MIDDLEWARE = [

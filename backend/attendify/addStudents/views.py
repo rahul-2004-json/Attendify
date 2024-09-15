@@ -52,34 +52,3 @@ def add_students(request):
 
     # If the request method is not POST, return an error
     return JsonResponse({"error": "Invalid request method"}, status=400)
-
-
-
-""" This is valid for query parameters, but supports only single addition of student e.g.
-http://localhost:8000/getAttendanceList/fetch_students/?year=2024&batch=A&branch=CSE
-
-@csrf_exempt
-def fetch_students(request):
-    year = request.GET.get('year')
-    batch = request.GET.get('batch')
-    branch = request.GET.get('branch')
-
-    if year is None or batch is None or branch is None:
-        return JsonResponse({"error": "Missing parameters"}, status=400)
-
-    try:
-        year = int(year)
-    except ValueError:
-        return JsonResponse({"error": "Invalid year parameter"}, status=400)
-
-    # Query MongoDB collection
-    students = students_collection.find({
-        "year": year,
-        "batch": batch,
-        "branch": branch
-    })
-
-    student_list = [{"name": student['name'], "enroll": student['enroll']} for student in students]
-
-    return JsonResponse({"students": student_list}, status=200)
-"""

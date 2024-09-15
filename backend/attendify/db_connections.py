@@ -5,3 +5,4 @@ client = pymongo.MongoClient(url)
 
 db = client['attendify_data']
 images_collection = db['Images']
+students_collection = db['students']

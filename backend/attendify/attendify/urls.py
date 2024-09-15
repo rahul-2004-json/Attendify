@@ -21,7 +21,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-     path('image_handler/', include('image_handler.urls')),
+    path('image_handler/', include('image_handler.urls')),
+    path('getAttendanceList/', include('getAttendanceList.urls')),
 ]
 
 #For serving the media files in development by updating urls.py

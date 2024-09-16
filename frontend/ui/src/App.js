@@ -36,7 +36,10 @@ function App() {
   };
 
   return (
-    <div className="flex justify-center h-screen bg-blue-50  top-30px">
+    <div className="flex-col itmes-center h-screen bg-blue-50  top-30px">
+      <div class="text-4xl text-white font-bold font-sans bg-blue-400 p-5 border-blue-800 border-b-4 border-r-4">
+        Attendify
+      </div>
         <div className="flex-col justify-center ">
           <div className="pt-20 px-20 ">
             <div className="p-5 ">

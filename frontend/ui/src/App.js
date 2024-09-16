@@ -4,7 +4,36 @@ import axios from "axios";
 import "./App.css";
 
 function App() {
-  
+  const [selectedFiles, setSelectedFiles] = useState([]);
+
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const files = Array.from(e.target.files);
+      setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
+    } else {
+      console.error("No files selected");
+    }
+  };
+
+  const handleClick = (e) => {
+    document.getElementById("fileInput").click();
+  };
+
+  const handleUpload = async () => {
+    const formData = new FormData();
+    selectedFiles.forEach((file) => {
+      formData.append("files", file);
+    });
+
+    try {
+      const response = await axios.post("YOUR_BACKEND_API_URL", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log("Upload successful:", response.data);
+    } catch (error) {
+      console.error("Error uploading files:", error);
+    }
+  };
 
   return (
     <div className="flex justify-center h-screen bg-blue-50  top-30px">

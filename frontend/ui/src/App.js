@@ -42,8 +42,8 @@ function App() {
       </div>
         <div className="flex-col justify-center ">
           <div className="pt-20 px-20 ">
-            <div className="p-5 ">
-              <h2>Upload Your Images</h2>
+            <div className="p-5 font-bold ">
+              <h2>UPLAOD YOUR IMAGES</h2>
             </div>
             <input
               id="fileInput"
@@ -69,27 +69,35 @@ function App() {
             <div className="p-10 flex justify-center border-4 border-blue-500 border-dashed rounded-lg">
               <FaCloudUploadAlt style={{color: 'blue', fontSize: '100px' }} />
             </div>
-            <div className="p-10">
-              <p>Click to upload images</p>
+            <div className="p-10 font-bold">
+              <p>CLICK TO UPLOAD IMAGES</p>
             </div>
           </div>
 
           {selectedFiles.length > 0 && (
             <div className="file-names p-10">
-              <h3>Selected Files:</h3>
+              <div className="font-bold">
+                <h3>SELECTED FILES : </h3>
+              </div>
               <ul>
-                {selectedFiles.map((file, index) => (
-                  <li key={index}>{file.name}</li>
-                ))}
+                <div>
+                  {selectedFiles.map((file, index) => (
+                    <div className="border-4 border-blue-500 m-3 font-bold rounded-md p-2 uppercase">
+                      <li key={index}>{file.name}</li>
+                    </div>
+                  ))}
+                </div>
               </ul>
             </div>
           )}
 
-          {selectedFiles.length > 0 && (
-            <button onClick={handleUpload} className="upload-button">
-              Upload Files
-            </button>
-          )}
+          <div className="pl-10 font-bold">
+            {selectedFiles.length > 0 && (
+              <button onClick={handleUpload} className="upload-button">
+                UPLOAD FILES
+              </button>
+            )}
+          </div>
         </div>
     </div>
   );

@@ -47,7 +47,7 @@ def fetch_preview_images(request):
                     "public_id": public_id,
                     "bboxes": [{"bbox": bbox} for bbox in bounding_boxes],  # Convert to list directly
                     "best_rotation_angle": best_rotation_angle,
-                    "timestamp": datetime.now(datetime.timezone.utc).isoformat()
+                    "timestamp": datetime.utcnow().isoformat()
                 }
 
                 # Insert the document into MongoDB
@@ -58,6 +58,7 @@ def fetch_preview_images(request):
                     "asset_id": asset_id,
                     "public_id": public_id,
                     "image_url": image_url,
+                    "number of detected faces": len(bounding_boxes),
                     "bboxes": bounding_boxes,
                     "best_rotation_angle": best_rotation_angle
                 })

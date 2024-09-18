@@ -1,10 +1,10 @@
 from django.http import JsonResponse
 from db_connections import students_collection
 from django.views.decorators.csrf import csrf_exempt
-
+import json
 
 """ This is valid for query parameters, e.g.
-http://127.0.0.1:8000/getAttendanceList/fetch_students/?year=2024&batch=B1&batch=B2&branch=CSE
+http://127.0.0.1:8000/api/getAttendanceList/fetch_students/?year=2024&batch=B1&batch=B2&branch=CSE
 """
 
 @csrf_exempt
@@ -12,8 +12,6 @@ def fetch_students(request):
     year = request.GET.get('year')
     batches = request.GET.getlist('batch')  # Get multiple batch values
     branch = request.GET.get('branch')
-
-    print(year, batches, branch)
 
     if year is None or not batches or branch is None:
         return JsonResponse({"error": "Missing parameters"}, status=400)
@@ -37,6 +35,41 @@ def fetch_students(request):
         "msg": f"Students of year {year}, batches: {batches} and branch {branch} fetched successfully."}, 
         status=200
     )
+
+""" This is valid for POST request using JSON data, csv will be parsed in the frontend and sent as JSON"""
+@csrf_exempt
+def upload_csv(request):
+    if request.method != 'POST':
+        return JsonResponse({"error": "POST method required"}, status=400)
+
+    try:
+        data = json.loads(request.body)
+        enrollment_numbers = data.get('enrollments', [])
+        
+        if not enrollment_numbers:
+            return JsonResponse({"error": "No enrollment numbers provided"}, status=400)
+
+        # Query MongoDB for students with these enrollment numbers
+        students = students_collection.find({
+            "enroll": {"$in": enrollment_numbers}
+        })
+
+        student_list = [{"name": student['name'], "enroll": student['enroll']} for student in students]
+
+        return JsonResponse({
+            "students": student_list,
+        }, status=200)
+
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON data"}, status=400)
+    except Exception as e:
+        return JsonResponse({"error": f"An error occurred: {str(e)}"}, status=500)
+
+
+
+
+
+
 
 
 """

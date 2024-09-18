@@ -1,9 +1,4 @@
-import json
 import cloudinary.uploader
-import numpy as np
-import cv2
-from PIL import Image
-import io
 from datetime import datetime
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -29,7 +24,7 @@ def fetch_preview_images(request):
                 cloudinary_response = cloudinary.uploader.upload(image_file)
                 image_url = cloudinary_response.get('secure_url')  # Cloudinary URL
                 asset_id = cloudinary_response.get('asset_id')  # Cloudinary asset ID
-
+                public_id = cloudinary_response.get('public_id')  # Cloudinary public ID
 
                 # Run face detection on the image
                 bounding_boxes, best_rotation_angle = detect_faces_haar(image_file)
@@ -45,9 +40,10 @@ def fetch_preview_images(request):
                 image_doc = {
                     "asset_id": asset_id,
                     "image_url": image_url,
-                    "bboxes": [{"bbox": bbox.tolist()} for bbox in bounding_boxes],  # Convert numpy array to list
+                    "public_id": public_id,
+                    "bboxes": [{"bbox": bbox} for bbox in bounding_boxes],  # Convert to list directly
                     "best_rotation_angle": best_rotation_angle,
-                    "timestamp": datetime.utcnow().isoformat()
+                    "timestamp": datetime.now(datetime.timezone.utc).isoformat()
                 }
 
                 # Insert the document into MongoDB
@@ -56,6 +52,7 @@ def fetch_preview_images(request):
                 # Append success response with Cloudinary data and bounding boxes
                 responses.append({
                     "asset_id": asset_id,
+                    "public_id": public_id,
                     "image_url": image_url,
                     "bboxes": bounding_boxes,
                     "best_rotation_angle": best_rotation_angle

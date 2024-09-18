@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'addStudents',
     'getAttendanceList',
     'image_handler',
+    'deleteImage' ,
 ]
 
 MIDDLEWARE = [

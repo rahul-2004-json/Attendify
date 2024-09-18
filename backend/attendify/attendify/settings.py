@@ -13,6 +13,15 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 
+# import environ
+# import cloudinary
+
+# env = environ.Env()
+# environ.Env.read_env()
+
+
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -131,3 +140,13 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+# #Cloudinary Config
+# cloudinary.config(
+#     cloud_name=env('CLOUDINARY_CLOUD_NAME'),
+#     api_key=env('CLOUDINARY_API_KEY'),
+#     api_secret=env('CLOUDINARY_API_SECRET'),
+#     secure=True
+# )

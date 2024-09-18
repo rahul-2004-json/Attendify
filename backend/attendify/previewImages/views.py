@@ -30,7 +30,6 @@ def fetch_preview_images(request):
                 image_url = cloudinary_response.get('secure_url')  # Cloudinary URL
                 asset_id = cloudinary_response.get('asset_id')  # Cloudinary asset ID
 
-
                 # Run face detection on the image
                 bounding_boxes, best_rotation_angle = detect_faces_haar(image_file)
 
@@ -41,11 +40,15 @@ def fetch_preview_images(request):
                     })
                     continue
 
+                # Convert bounding boxes and best_rotation_angle to JSON-friendly types
+                bounding_boxes = [[int(coord) for coord in bbox] for bbox in bounding_boxes]
+                best_rotation_angle = int(best_rotation_angle)  # Convert numpy int to Python int
+                
                 # Prepare data for MongoDB
                 image_doc = {
                     "asset_id": asset_id,
                     "image_url": image_url,
-                    "bboxes": [{"bbox": bbox.tolist()} for bbox in bounding_boxes],  # Convert numpy array to list
+                    "bboxes": [{"bbox": bbox} for bbox in bounding_boxes],  # Already a list of lists
                     "best_rotation_angle": best_rotation_angle,
                     "timestamp": datetime.utcnow().isoformat()
                 }

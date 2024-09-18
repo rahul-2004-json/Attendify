@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('api/addStudents/', include('addStudents.urls')),
     path('api/getAttendanceList/', include('getAttendanceList.urls')),
+    path('api/previewImages/', include('previewImages.urls')),
     path('api/imageHandler/', include('image_handler.urls')),
 ]
 

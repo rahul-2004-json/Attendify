@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'addStudents',
     'getAttendanceList',
+    'previewImages',
     'image_handler',
 ]
 
@@ -105,8 +106,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 #Media Folder to store uploaded files
-MEDIA_URL = "/media/"     # ULR to access the files in browser
-MEDIA_ROOT = os.path.join(BASE_DIR,"media")   # Folder to store uploaded files
+# MEDIA_URL = "/media/"     # ULR to access the files in browser
+# MEDIA_ROOT = os.path.join(BASE_DIR,"media")   # Folder to store uploaded files
 
 
 # Internationalization

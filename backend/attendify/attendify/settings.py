@@ -13,6 +13,15 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 
+# import environ
+# import cloudinary
+
+# env = environ.Env()
+# environ.Env.read_env()
+
+
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -40,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'addStudents',
     'getAttendanceList',
+    'previewImages',
     'image_handler',
     'deleteImage' ,
 ]
@@ -106,8 +116,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 #Media Folder to store uploaded files
-MEDIA_URL = "/media/"     # ULR to access the files in browser
-MEDIA_ROOT = os.path.join(BASE_DIR,"media")   # Folder to store uploaded files
+# MEDIA_URL = "/media/"     # ULR to access the files in browser
+# MEDIA_ROOT = os.path.join(BASE_DIR,"media")   # Folder to store uploaded files
 
 
 # Internationalization
@@ -132,11 +142,11 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-import cloudinary
 
-cloudinary.config( 
-  cloud_name = "your_cloud_name", 
-  api_key = "your_api_key", 
-  api_secret = "your_api_secret" 
-)
-
+# #Cloudinary Config
+# cloudinary.config(
+#     cloud_name=env('CLOUDINARY_CLOUD_NAME'),
+#     api_key=env('CLOUDINARY_API_KEY'),
+#     api_secret=env('CLOUDINARY_API_SECRET'),
+#     secure=True
+# )

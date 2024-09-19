@@ -1,0 +1,1 @@
+import cloudinary_config

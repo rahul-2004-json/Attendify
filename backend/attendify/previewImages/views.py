@@ -20,7 +20,7 @@ def fetch_preview_images(request):
             responses = []
 
             for image_file in files:
-                # Upload the image to Cloudinary
+
                 cloudinary_response = cloudinary.uploader.upload(image_file)
                 image_url = cloudinary_response.get('secure_url')  # Cloudinary URL
                 asset_id = cloudinary_response.get('asset_id')  # Cloudinary asset ID

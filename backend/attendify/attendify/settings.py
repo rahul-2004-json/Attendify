@@ -142,8 +142,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-<<<<<<< HEAD
-
 
 # #Cloudinary Config
 # cloudinary.config(
@@ -152,13 +150,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #     api_secret=env('CLOUDINARY_API_SECRET'),
 #     secure=True
 # )
-=======
-import cloudinary
-
-cloudinary.config( 
-  cloud_name = "your_cloud_name", 
-  api_key = "your_api_key", 
-  api_secret = "your_api_secret" 
-)
-
->>>>>>> c693b6228032975fba5f45256785b0dc5cb8ee8a

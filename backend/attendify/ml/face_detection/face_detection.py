@@ -28,28 +28,29 @@ def detect_faces_haar(image_file, scaleFactor=1.3, minNeighbors=5):
             
             # Detect faces
             faces = detect_face_model.detectMultiScale(grayscale, scaleFactor=scaleFactor, minNeighbors=minNeighbors)
-            print(faces)
-            bounding_boxes = [(x, y, w, h) for (x, y, w, h) in faces]
+            # print(faces)
+            # bounding_boxes =[(x, y, w, h) for (x, y, w, h) in faces]
+            bounding_boxes = faces
             
             # Track the rotation with the most detected faces
             if len(bounding_boxes) > max_faces:
-                test_image = rotated_image_pil
+                # test_image = rotated_image_pil
                 max_faces = len(bounding_boxes)
                 best_angle = angle
                 best_bounding_boxes = bounding_boxes
 
-        # Draw bounding boxes on the best-rotated image
-        image_np_best = np.array(test_image)
-        for (x, y, w, h) in best_bounding_boxes:
-            cv2.rectangle(image_np_best, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        # # Draw bounding boxes on the best-rotated image
+        # image_np_best = np.array(test_image)
+        # for (x, y, w, h) in best_bounding_boxes:
+        #     cv2.rectangle(image_np_best, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-        # Convert back to BGR format for display with OpenCV
-        image_np_best_bgr = cv2.cvtColor(image_np_best, cv2.COLOR_RGB2BGR)
+        # # Convert back to BGR format for display with OpenCV
+        # image_np_best_bgr = cv2.cvtColor(image_np_best, cv2.COLOR_RGB2BGR)
 
-        # Display the image with bounding boxes
-        cv2.imshow("Detected Faces", image_np_best_bgr)
-        cv2.waitKey(0)  # Wait for a key press to close the window
-        cv2.destroyAllWindows()
+        # # Display the image with bounding boxes
+        # cv2.imshow("Detected Faces", image_np_best_bgr)
+        # cv2.waitKey(0)  # Wait for a key press to close the window
+        # cv2.destroyAllWindows()
 
         # Return the best bounding boxes and rotation angle
         return best_bounding_boxes, best_angle

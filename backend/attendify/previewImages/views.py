@@ -36,16 +36,16 @@ def fetch_preview_images(request):
                     })
                     continue
 
-                # Convert bounding boxes and best_rotation_angle to JSON-friendly types
+                # Convert bounding boxes and best_rotation_angle to JSON format
                 bounding_boxes = [[int(coord) for coord in bbox] for bbox in bounding_boxes]
-                best_rotation_angle = int(best_rotation_angle)  # Convert numpy int to Python int
+                best_rotation_angle = int(best_rotation_angle)
                 
-                # Prepare data for MongoDB
+                # data for MongoDB
                 image_doc = {
                     "asset_id": asset_id,
                     "image_url": image_url,
                     "public_id": public_id,
-                    "bboxes": [{"bbox": bbox} for bbox in bounding_boxes],  # Convert to list directly
+                    "bboxes": [{"bbox": bbox} for bbox in bounding_boxes],
                     "best_rotation_angle": best_rotation_angle,
                     "timestamp": datetime.utcnow().isoformat()
                 }

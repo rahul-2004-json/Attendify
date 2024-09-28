@@ -12,7 +12,7 @@ function App() {
     <Router>
     <div>
       <Routes>
-        <Route path="/" element={<></>} />  
+        <Route path="/" element={<UploadImage/>} />  
         <Route path="/sign_in" element={<SignIn/>} />  
         <Route path="/sign_up" element={<SignUp/>} />  
         <Route path="upload_image" element={<UploadImage/>} /> 

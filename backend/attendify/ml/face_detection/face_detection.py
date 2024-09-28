@@ -24,7 +24,7 @@ def detect_faces_haar(image_file, scaleFactor=1.3, minNeighbors=5):
             rotated_image_pil = image_pil.rotate(angle, resample=Image.BICUBIC, expand=True)
             image_np = np.array(rotated_image_pil)
 
-            grayscale = cv2.cvtColor(image_np, cv2.COLOR_RGB2GRAY)  # Convert to grayscale
+            grayscale = cv2.cvtColor(image_np, cv2.COLOR_RGB2GRAY)  
             
             # Detect faces
             faces = detect_face_model.detectMultiScale(grayscale, scaleFactor=scaleFactor, minNeighbors=minNeighbors)
@@ -34,7 +34,7 @@ def detect_faces_haar(image_file, scaleFactor=1.3, minNeighbors=5):
             
             # Track the rotation with the most detected faces
             if len(bounding_boxes) > max_faces:
-                # test_image = rotated_image_pil
+                test_image = rotated_image_pil
                 max_faces = len(bounding_boxes)
                 best_angle = angle
                 best_bounding_boxes = bounding_boxes

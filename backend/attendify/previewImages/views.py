@@ -1,5 +1,6 @@
 import cloudinary.uploader
 from datetime import datetime
+from bson import ObjectId
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from db_connections import preview_images_collection  # MongoDB collection import
@@ -12,7 +13,6 @@ def fetch_preview_images(request):
     """
     if request.method == 'POST':
         try:
-            # Check if multiple image files are provided in the request
             if 'files' not in request.FILES:
                 return JsonResponse({"error": "No image files uploaded"}, status=400)
 
@@ -22,9 +22,9 @@ def fetch_preview_images(request):
             for image_file in files:
 
                 cloudinary_response = cloudinary.uploader.upload(image_file)
-                image_url = cloudinary_response.get('secure_url')  # Cloudinary URL
-                asset_id = cloudinary_response.get('asset_id')  # Cloudinary asset ID
-                public_id = cloudinary_response.get('public_id')  # Cloudinary public ID
+                image_url = cloudinary_response.get('secure_url') 
+                asset_id = cloudinary_response.get('asset_id')  
+                public_id = cloudinary_response.get('public_id') 
 
                 # Run face detection on the image
                 bounding_boxes, best_rotation_angle = detect_faces_haar(image_file)
@@ -36,11 +36,11 @@ def fetch_preview_images(request):
                     })
                     continue
 
-                # Convert bounding boxes and best_rotation_angle to JSON format
+                #Convert bounding boxes and best_rotation_angle to JSON format
                 bounding_boxes = [[int(coord) for coord in bbox] for bbox in bounding_boxes]
                 best_rotation_angle = int(best_rotation_angle)
                 
-                # data for MongoDB
+                #Data creation for MongoDB
                 image_doc = {
                     "asset_id": asset_id,
                     "image_url": image_url,
@@ -51,10 +51,11 @@ def fetch_preview_images(request):
                 }
 
                 # Insert the document into MongoDB
-                preview_images_collection.insert_one(image_doc)
+                insert_result =preview_images_collection.insert_one(image_doc)
+                object_id = str(insert_result.inserted_id) 
 
-                # Append success response with Cloudinary data and bounding boxes
                 responses.append({
+                    "object_id": object_id,
                     "asset_id": asset_id,
                     "public_id": public_id,
                     "image_url": image_url,
@@ -71,5 +72,4 @@ def fetch_preview_images(request):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
 
-    # Return error if not a POST request
     return JsonResponse({"error": "Invalid request method"}, status=400)

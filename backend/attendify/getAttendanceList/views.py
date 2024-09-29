@@ -10,7 +10,7 @@ http://127.0.0.1:8000/api/getAttendanceList/fetch_students/?year=2024&batch=B1&b
 @csrf_exempt
 def fetch_students(request):
     year = request.GET.get('year')
-    batches = request.GET.getlist('batch')  # Get multiple batch values
+    batches = request.GET.getlist('batch')  
     branch = request.GET.get('branch')
 
     if year is None or not batches or branch is None:
@@ -21,7 +21,6 @@ def fetch_students(request):
     except ValueError:
         return JsonResponse({"error": "Invalid year parameter"}, status=400)
 
-    # Query MongoDB for multiple batches
     students = students_collection.find({
         "year": year,
         "batch": {"$in": batches},  # Match any of the selected batches

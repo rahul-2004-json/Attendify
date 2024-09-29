@@ -3,7 +3,7 @@ from db_connections import students_collection
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-# This is valid for POST request using form data
+
 @csrf_exempt
 def add_students(request):
     """
@@ -35,13 +35,12 @@ def add_students(request):
                     "enroll": int(enroll),
                     "batch": batch,
                     "year": int(year),
-                    "student_image_url": student_image_url,  # Cloudinary URL
+                    "student_image_url": student_image_url,
                     "branch": branch
                 }
 
                 student_docs.append(student_doc)
 
-            # Insert the list of student documents into the collection
             students_collection.insert_many(student_docs)
 
             # Return success response
@@ -50,5 +49,4 @@ def add_students(request):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
 
-    # If the request method is not POST, return an error
     return JsonResponse({"error": "Invalid request method"}, status=400)

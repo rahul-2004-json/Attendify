@@ -32,7 +32,9 @@ const UploadImage = () => {
     });
 
     try {
-      const response = await axios.post("https://1z4w3pmq-8000.inc1.devtunnels.ms/api/previewImages/fetch_preview_images/", formData, {
+
+      // To access with forwarded port "https://4m96x4qr-8000.inc1.devtunnels.ms/api/previewImages/fetch_preview_images/"
+      const response = await axios.post("http://127.0.0.1:8000/api/previewImages/fetch_preview_images/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       console.log("Upload successful:", response.data);

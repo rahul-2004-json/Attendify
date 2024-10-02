@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { RxHamburgerMenu } from "react-icons/rx";
+import { IoCloseOutline } from "react-icons/io5";
 
 const Header = () => {
+  const [isMenuOpen, setMenuOpen] = useState(false);
   return (
     <div>
       <nav className="py-5 lg:fixed w-full bg-white transition-all duration-500 shadow-md shadow-indigo-300">
@@ -9,41 +12,49 @@ const Header = () => {
           <div className="w-full flex flex-col lg:flex-row">
             <div className=" flex justify-between  lg:flex-row">
               <Link to="/" className="flex items-center">
-              <img
-                  src="/images/attendifylogo2.png" 
+                <img
+                  src="/images/attendifylogo2.png"
                   alt="attendify"
-                  className="h-14 w-30" 
+                  className="h-14 w-30"
                 />
               </Link>
 
               {/* Burger Menu */}
-              <button
-                data-collapse-toggle="navbar"
-                type="button"
-                className="inline-flex items-center p-2 ml-3 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 "
-                aria-controls="navbar-default"
-                aria-expanded="false"
-              >
-                <span className="sr-only">Open main menu</span>
-                <svg
-                  className="w-6 h-6"
-                  aria-hidden="true"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
+              {isMenuOpen ? (
+                <button
+                  data-collapse-toggle="navbar"
+                  type="button"
+                  className="inline-flex items-center p-2 ml-3 text-sm text-gray-500 rounded-lg lg:hidden focus:outline-none focus:ring-2 focus:ring-gray-200 "
+                  aria-controls="navbar-default"
+                  aria-expanded="false"
+                  onClick={() => {
+                    setMenuOpen(false);
+                  }}
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
+                  <IoCloseOutline size={25} />
+                </button>
+              ) : (
+                <button
+                  data-collapse-toggle="navbar"
+                  type="button"
+                  className="inline-flex items-center p-2 ml-3 text-sm text-gray-500 rounded-lg lg:hidden focus:outline-none focus:ring-2 focus:ring-gray-200 "
+                  aria-controls="navbar-default"
+                  aria-expanded="false"
+                  onClick={() => {
+                    setMenuOpen(true);
+                  }}
+                >
+                  <RxHamburgerMenu size={25} />
+                </button>
+              )}
             </div>
 
             <div
-              className="hidden w-full lg:flex lg:pl-11 max-lg:py-4"
+              className={`w-full lg:flex text-center lg:pl-11 max-lg:py-4 ${
+                isMenuOpen ? "block" : "hidden"
+              }`}
               id="navbar"
+              
             >
               <ul className="flex lg:items-center flex-col max-lg:gap-4 mt-4 lg:mt-0 lg:flex-row max-lg:mb-4">
                 <li>

@@ -1,5 +1,6 @@
 import cloudinary.uploader
 from datetime import datetime
+from bson import ObjectId
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from db_connections import preview_images_collection  # MongoDB collection import
@@ -49,10 +50,12 @@ def fetch_preview_images(request):
                     "timestamp": datetime.utcnow().isoformat()
                 }
 
-               
-                preview_images_collection.insert_one(image_doc)
+                # Insert the document into MongoDB
+                insert_result =preview_images_collection.insert_one(image_doc)
+                object_id = str(insert_result.inserted_id) 
 
                 responses.append({
+                    "object_id": object_id,
                     "asset_id": asset_id,
                     "public_id": public_id,
                     "image_url": image_url,

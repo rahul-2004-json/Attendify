@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { MdDelete } from "react-icons/md";
+import {Link} from "react-router-dom"
 
 const FetchStudent = () => {
   const [selectedBatches, setSelectedBatches] = useState([]);
@@ -139,8 +140,8 @@ const FetchStudent = () => {
                     {csvFile.map((file, index) => (
                       <div className="flex border p-2 rounded-md shadow-md shadow-indigo-300 items-center justify-between">
                         <li key={index}>{file.name}</li>
-                        <button onClick={() => handleDeleteCSV(index)}>
-                          <MdDelete className="text-red-500" />
+                        <button  className=" text-white bg-red-500 rounded-full p-1 cursor-pointer" onClick={() => handleDeleteCSV(index)}>
+                          <MdDelete />
                         </button>
                       </div>
                     ))}
@@ -153,12 +154,15 @@ const FetchStudent = () => {
       </div>
 
       <div className="flex justify-center">
+      <Link to={"/uploadImage"}>
+
         <button
           onClick={handleNext}
           className="mt-12 mb-10 bg-indigo-600 text-white rounded-full cursor-pointer font-semibold text-center shadow-xs transition-all duration-500 py-3 px-6 text-sm lg:ml-1 hover:bg-indigo-700"
         >
           Next
         </button>
+      </Link>
       </div>
     </div>
   );

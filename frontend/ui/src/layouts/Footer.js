@@ -7,16 +7,16 @@ const Footer = () => {
       <footer class="bg-white rounded-lg shadow m-4 border-2 ">
         <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
           <div class="sm:flex sm:items-center sm:justify-between">
-              <Link
-                to="/"
-                class="flex items-center mb-4 sm:mb-0 ml-14 space-x-3 rtl:space-x-reverse "
-              >
-                <img
-                  src="/images/attendifylogo2.png"
-                  alt="attendify"
-                  className="h-14 w-30"
-                />
-              </Link>
+            <Link
+              to="/"
+              class="flex items-center mb-4 sm:mb-0 ml-14 space-x-3 rtl:space-x-reverse "
+            >
+              <img
+                src="/images/attendifylogo2.png"
+                alt="attendify"
+                className="h-14 w-30"
+              />
+            </Link>
             <ul class="flex flex-wrap ml-2 items-center mb-6 text-sm font-medium text-black sm:mb-0 ">
               <li>
                 <Link to="#" class="hover:underline me-4 md:me-6">

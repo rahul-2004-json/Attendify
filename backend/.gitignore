@@ -1,3 +1,4 @@
 *virtualenv/*
 */labelled_data/*
 */sample_images/*
+*/.pyc *

@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from db_connections import students_collection
 from django.views.decorators.csrf import csrf_exempt
 import json
+from ml.addNewKnownFaces.addNewKnownFace import add_new_known_faces
 
 
 @csrf_exempt
@@ -17,6 +18,7 @@ def add_students(request):
             students_data = data.get('students', [])
 
             student_docs = []
+            new_students = [] 
             for student in students_data:
 
                 name = student.get('name')
@@ -25,9 +27,10 @@ def add_students(request):
                 year = student.get('year')
                 student_image_url = student.get('student_image_url')
                 branch = student.get('branch', 'CSE')  # Default to 'CSE'
+                image = student.get('image')
 
                 # Validate required fields for each student
-                if not all([name, enroll, batch, year, student_image_url, branch]):
+                if not all([name, enroll, batch, year, student_image_url, branch , image]):
                     return JsonResponse({"error": "Missing required fields"}, status=400)
 
                 student_doc = {
@@ -41,7 +44,11 @@ def add_students(request):
 
                 student_docs.append(student_doc)
 
+                new_students.append({"enroll": enroll, "studImage": image})
+
             students_collection.insert_many(student_docs)
+
+            add_new_known_faces(new_students)
 
             # Return success response
             return JsonResponse({"message": "Students added successfully!"}, status=201)

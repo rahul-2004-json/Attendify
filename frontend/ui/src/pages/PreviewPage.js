@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { MdDelete } from "react-icons/md";
 import { IoCloseOutline } from "react-icons/io5";
+import { IoCameraReverse } from "react-icons/io5";
 
 const DetectedFaces = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -20,7 +21,8 @@ const DetectedFaces = () => {
     setSelectedImage(null); // Clear the selected image
   };
 
-  const handleDeleteImage =(img)=>{
+  //-> This Function Needs to be changed , to retake the selected image
+  const handleImageRetake =(img)=>{
     setImages(images.filter((image) => image !== img));
   };
 
@@ -37,8 +39,8 @@ const DetectedFaces = () => {
                 className="w-25 h-20 cursor-pointer"
                 onClick={() => handleImageClick(image)} // Trigger zoom on click
               />
-              <button className=" text-white bg-red-500 rounded-full p-1" onClick={()=> handleDeleteImage(image)}>
-                <MdDelete />
+              <button className=" text-white bg-red-500 rounded-full p-1" onClick={()=> handleImageRetake(image)}>
+                <IoCameraReverse  />
               </button>
             </div>
           ))}

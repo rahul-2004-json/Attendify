@@ -41,11 +41,6 @@ def add_new_known_faces(new_students):
             # Convert Pillow image to numpy array for face_recognition
             image_np = np.array(image_pil)
 
-            print(f"Image numpy array dtype: {image_np.dtype}, shape: {image_np.shape}")
-            if image_np.dtype != np.uint8 or image_np.ndim != 3:
-                print(f"Unsupported image type for enrollment: {enroll}. Skipping.")
-                continue
-
             # Get face encodings from the numpy array
             encodings = face_recognition.face_encodings(image_np)
 
@@ -83,6 +78,6 @@ def add_new_known_faces(new_students):
 
 # Test the function
 new_students = []
-with open(r"C:\Users\ansh bansal\Downloads\image.png", "rb") as img:
+with open("D:/Web Dev/Collaborate/Attendify/backend/attendify/ml/addNewKnownFaces/anand.jpg", "rb") as img:
     new_students.append({"enroll": "123456", "image_file": img})
     add_new_known_faces(new_students)

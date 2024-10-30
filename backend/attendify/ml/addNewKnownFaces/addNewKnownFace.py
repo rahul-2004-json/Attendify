@@ -78,6 +78,6 @@ def add_new_known_faces(new_students):
 
 # Test the function
 new_students = []
-with open("C:/Users/Rahul Yadav/OneDrive/Desktop/Attendify/backend/attendify/ml/addNewKnownFaces/anand.jpg", "rb") as img:
+with open("D:/Web Dev/Collaborate/Attendify/backend/attendify/ml/addNewKnownFaces/anand.jpg", "rb") as img:
     new_students.append({"enroll": "123456", "image_file": img})
-    add_new_known_faces(new_students)
+    # add_new_known_faces(new_students)

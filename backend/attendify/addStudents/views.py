@@ -1,5 +1,4 @@
 import json
-import cloudinary.uploader
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from db_connections import students_collection

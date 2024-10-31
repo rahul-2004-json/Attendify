@@ -3,6 +3,8 @@ import cloudinary
 import cloudinary.api
 import numpy as np
 from utils.loadImageFromUrl import load_image_from_url
+from utils.augmentImage import augment_image
+from utils.uploadImageToCloudinaryFolder import upload_images_to_cloudinary
 
 def get_encodings(np_image):
     """
@@ -36,8 +38,6 @@ def generate_all_encodings(enroll, cloudinary_folder_path):
             image_url = resource['secure_url']
             image_urls_in_folder.append(image_url)
 
-        # TODO : If only 1 image, augment the image and then generate encodings 
-
         # Initialize a list to hold encodings
         encodings = []
 
@@ -51,6 +51,25 @@ def generate_all_encodings(enroll, cloudinary_folder_path):
             # Check if encodings were found
             if face_encodings is not None:
                 encodings.append(face_encodings)
+
+        # If only 1 image, augment the image and then generate encodings
+        if len(image_urls_in_folder) == 1:
+            print("Augmenting image")
+            np_image = load_image_from_url(image_urls_in_folder[0])
+            augmented_images = augment_image(np_image, 4)
+            
+            # Upload all augmented images at once
+            upload_images_to_cloudinary(
+                image_list=augmented_images,
+                folder_path=cloudinary_folder_path,
+                enroll_id=enroll
+            )
+            
+            # Generate encodings for each augmented image
+            for augmented_image in augmented_images:
+                face_encodings = get_encodings(augmented_image)
+                if face_encodings is not None:
+                    encodings.append(face_encodings)
 
         # If no encodings were found, handle the case (e.g., log an error or skip updating)
         if not encodings:

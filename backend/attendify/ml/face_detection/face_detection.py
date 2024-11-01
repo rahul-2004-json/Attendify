@@ -53,8 +53,9 @@ def detect_faces_face_recognition(image_file):
         print(f"Error: {e}")
         return None, None
 
-    
 
+
+    
 def detect_faces_haar(image_file, scaleFactor=1.3, minNeighbors=5):
     """Detect faces using Haar Cascade in multiple orientations, returning the best result."""
     try:

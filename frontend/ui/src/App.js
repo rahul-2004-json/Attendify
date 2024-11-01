@@ -8,7 +8,7 @@ import Layout from './layouts/Layout';
 import FetchStudent from "./pages/FetchStudent";
 import UploadPage from "./pages/UploadPage";
 import PreviewPage from "./pages/PreviewPage";
-
+import AddStudent from "./pages/AddStudent";
 
 function App() {
   return (
@@ -21,6 +21,7 @@ function App() {
           <Route path="/takeattendance" element={<FetchStudent/>}/>
           <Route path="/uploadImage" element={<UploadPage/>}/>
           <Route path="/previewDetection" element={<PreviewPage/>}/>
+          <Route path="/addStudent" element={<AddStudent/>}/>
           {/* <Route path="/upload" element={<UploadImage/>}/> */}
         </Route>  
 

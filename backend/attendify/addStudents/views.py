@@ -25,14 +25,16 @@ def add_students(request):
                 batch = student.get('batch')
                 year = student.get('year')
                 branch = student.get('branch', 'CSE')  # Default to 'CSE'
-                cloudinary_folder_path = student.get('cloudinary_folder_url')
+                cloudinary_folder_path = student.get('folder_url')
+                image_urls = student.get('image_urls', [])
+
 
                 # Validate required fields
-                if not all([name, enroll, batch, year, branch, cloudinary_folder_path]):
+                if not all([name, enroll, batch, year, branch, cloudinary_folder_path,image_urls]):
                     return JsonResponse({"error": "Missing required fields"}, status=400)
                 
                 # Get the face encodings for the student
-                encodings = generate_all_encodings(enroll, cloudinary_folder_path)
+                encodings = generate_all_encodings(enroll, cloudinary_folder_path,image_urls)
                 if(encodings == None):
                    encodings = []
 

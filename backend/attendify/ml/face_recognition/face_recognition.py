@@ -5,6 +5,7 @@ import numpy as np
 from utils.loadImageFromUrl import load_image_from_url
 from utils.augmentImage import augment_image
 from utils.uploadImageToCloudinaryFolder import upload_images_to_cloudinary
+from utils.For_ML.crop_face import crop_and_resize_face
 
 def get_encodings(np_image):
     """
@@ -25,45 +26,47 @@ def get_encodings(np_image):
     return face_encodings[0]  # Return the first (and assumed only) face encoding
 
 
-def generate_all_encodings(enroll, cloudinary_folder_path):
+def generate_all_encodings(enroll, cloudinary_folder_path, image_urls):
     """
     Function to generate face encodings for new students and update their records in the database.
     """
     try:
-        # Fetch images from Cloudinary folder
-        resources = cloudinary.api.resources_by_asset_folder(cloudinary_folder_path, max_results=15)  # Adjust max_results as needed
-        image_urls_in_folder = []
-
-        for resource in resources['resources']:
-            image_url = resource['secure_url']
-            image_urls_in_folder.append(image_url)
-
         # Initialize a list to hold encodings
         encodings = []
 
+        first_image =  None
+
         # Process each image to generate face encodings
-        for image_url in image_urls_in_folder:
-            # Load the image from cloudinary
+        for image_url in image_urls:
+            # Load the image from Cloudinary
             np_image = load_image_from_url(image_url)
-            # Generate face encodings
-            face_encodings = get_encodings(np_image)
+
+
+            # Normalize and crop the face from the image
+            cropped_face = crop_and_resize_face(np_image)
+
+            if first_image is None:
+                first_image = cropped_face
+
+            # Generate face encodings from the cropped face
+            face_encodings = get_encodings(cropped_face)
 
             # Check if encodings were found
             if face_encodings is not None:
                 encodings.append(face_encodings)
 
         # If only 1 image, augment the image and then generate encodings
-        if len(image_urls_in_folder) == 1:
+        if len(image_urls) == 1:
             print("Augmenting image")
-            np_image = load_image_from_url(image_urls_in_folder[0])
+            np_image = first_image
             augmented_images = augment_image(np_image, 4)
             
             # Upload all augmented images at once
-            upload_images_to_cloudinary(
-                image_list=augmented_images,
-                folder_path=cloudinary_folder_path,
-                enroll_id=enroll
-            )
+            # upload_images_to_cloudinary(
+            #     image_list=augmented_images,
+            #     folder_path=cloudinary_folder_path,
+            #     enroll_id=enroll
+            # )
             
             # Generate encodings for each augmented image
             for augmented_image in augmented_images:

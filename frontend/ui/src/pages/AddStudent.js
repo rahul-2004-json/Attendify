@@ -3,6 +3,7 @@ import { TbCirclePlus } from "react-icons/tb";
 import { FaImages, FaFolderOpen } from "react-icons/fa";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { PiStudentBold } from "react-icons/pi";
+// import { uploadImagesToCloudinary } from "../utils/cloudinaryUtils";
 
 const AddStudent = () => {
   const currentYear = new Date().getFullYear();
@@ -39,7 +40,7 @@ const AddStudent = () => {
     setShowForm(true);
   };
 
-  const handleSubmit = () => {
+  const handleAdd = () => {
     const errors = {};
     if (!newStudent.name) errors.name = "Name is required.";
     if (!newStudent.enroll) errors.enroll = "Enrollment number is required.";
@@ -65,6 +66,10 @@ const AddStudent = () => {
       setShowForm(false);
     }
   };
+
+  const handleSubmit=()=>{
+
+  }
 
   const handleImagePreview = (images) => {
     setSelectedImages(images);
@@ -236,10 +241,10 @@ const AddStudent = () => {
           )}{" "}
           {/* Error for images */}
           <button
-            onClick={handleSubmit}
+            onClick={handleAdd}
             className="w-full bg-indigo-600 text-white py-2 rounded "
           >
-            Submit
+            Add
           </button>
         </div>
       ) : (
@@ -254,6 +259,14 @@ const AddStudent = () => {
           <h2 className="text-2xl font-semibold">
             Click to {students.length ? "add another" : "add Students"}
           </h2>
+          {students.length > 0 && (
+            <button
+              onClick={handleSubmit}
+              className="mt-12 mb-10 bg-indigo-600 text-white rounded-full cursor-pointer font-semibold text-center shadow-xs transition-all duration-500 py-3 px-6 text-sm lg:ml-1 hover:bg-indigo-700 "
+            >
+              Submit
+            </button>
+          )}
         </div>
       )}
 

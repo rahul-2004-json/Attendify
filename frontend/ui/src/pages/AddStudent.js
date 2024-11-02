@@ -3,7 +3,6 @@ import { TbCirclePlus } from "react-icons/tb";
 import { FaImages, FaFolderOpen } from "react-icons/fa";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { PiStudentBold } from "react-icons/pi";
-// import { uploadImagesToCloudinary } from "../utils/cloudinaryUtils";
 
 const AddStudent = () => {
   const currentYear = new Date().getFullYear();

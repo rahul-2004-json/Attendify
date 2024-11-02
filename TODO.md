@@ -7,5 +7,4 @@
 - Face recognition and sending the final attendacne list
 - Change batch from F to E when ece selected 
 
-
  

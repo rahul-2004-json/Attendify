@@ -34,7 +34,7 @@ def add_students(request):
                     return JsonResponse({"error": "Missing required fields"}, status=400)
                 
                 # Get the face encodings for the student
-                encodings = generate_all_encodings(enroll, cloudinary_folder_path,image_urls)
+                encodings = generate_all_encodings(enroll, cloudinary_folder_path, image_urls)
                 if(encodings == None):
                    encodings = []
 

@@ -7,8 +7,9 @@ import cv2
 # Fetch the image from the URL
 def load_image_from_url(url):
     response = requests.get(url)
-    
+    print("In load_image_from_url")
     # Use BytesIO to treat the response content as a file-like object
+
     image_pil = Image.open(BytesIO(response.content)).convert("RGB")
     
     # Convert the PIL image to a NumPy array
@@ -16,7 +17,7 @@ def load_image_from_url(url):
 
     print("Image loaded successfully.")
     
-    # Convert RGB to BGR for OpenCV
+    # # Convert RGB to BGR for OpenCV
     # image_bgr = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
 
     # # Resize the image for better display (adjust width as needed)
@@ -25,7 +26,7 @@ def load_image_from_url(url):
     # new_height = int((new_width / width) * height)  # Maintain aspect ratio
     # resized_image = cv2.resize(image_bgr, (new_width, new_height))
 
-    # # # Display the resized image using OpenCV
+    # # Display the resized image using OpenCV
     # cv2.imshow("Detected Faces", resized_image)
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()

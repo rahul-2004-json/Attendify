@@ -3,7 +3,7 @@ import cloudinary
 import cloudinary.api
 import numpy as np
 from utils.loadImageFromUrl import load_image_from_url
-from utils.augmentImage import augment_image
+from utils.For_ML.augmentImage import augment_images
 from utils.uploadImageToCloudinaryFolder import upload_images_to_cloudinary
 from utils.For_ML.crop_face import crop_and_resize_face
 
@@ -34,19 +34,18 @@ def generate_all_encodings(enroll, cloudinary_folder_path, image_urls):
         # Initialize a list to hold encodings
         encodings = []
 
-        first_image =  None
+        first_cropped_image =  None
 
         # Process each image to generate face encodings
         for image_url in image_urls:
             # Load the image from Cloudinary
             np_image = load_image_from_url(image_url)
 
-
-            # Normalize and crop the face from the image
+            # crop and resize the face from the image
             cropped_face = crop_and_resize_face(np_image)
 
-            if first_image is None:
-                first_image = cropped_face
+            if first_cropped_image is None:
+                first_cropped_image = cropped_face
 
             # Generate face encodings from the cropped face
             face_encodings = get_encodings(cropped_face)
@@ -58,8 +57,8 @@ def generate_all_encodings(enroll, cloudinary_folder_path, image_urls):
         # If only 1 image, augment the image and then generate encodings
         if len(image_urls) == 1:
             print("Augmenting image")
-            np_image = first_image
-            augmented_images = augment_image(np_image, 4)
+            np_cropped_image = first_cropped_image
+            augmented_images = augment_images(np_cropped_image, 4)
             
             # Upload all augmented images at once
             # upload_images_to_cloudinary(

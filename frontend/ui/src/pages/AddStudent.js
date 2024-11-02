@@ -85,7 +85,7 @@ const AddStudent = () => {
 						formData.append("folder", folderName);
 
 						return axios.post(
-							`https://api.cloudinary.com/v1_1/rahul-yadav/image/upload`, // Replace with your Cloudinary cloud name
+							`https://api.cloudinary.com/v1_1/anandpanda/image/upload`, // Replace with your Cloudinary cloud name
 							formData
 						);
 					});
@@ -99,7 +99,7 @@ const AddStudent = () => {
 					// Prepare the student data with the Cloudinary folder URL
 					return {
 						...student,
-						folder_url: `https://res.cloudinary.com/rahul-yadav/image/list/${folderName}.json`, // Construct the folder URL
+						folder_url: folderName, // Construct the folder URL
 						image_urls: imageUrls,
 					};
 				})
@@ -111,7 +111,7 @@ const AddStudent = () => {
 
 			//   // TODO : Add a success toast notification
 			//   alert("Students added successfully!");
-			  setStudents([]); // Clear students list after successful submission
+			setStudents([]); // Clear students list after successful submission
 		} catch (error) {
 			console.error("Error submitting students:", error);
 			// TODO : Add an error toast notification

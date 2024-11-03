@@ -4,6 +4,7 @@ import { FaImages, FaFolderOpen } from "react-icons/fa";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { PiStudentBold } from "react-icons/pi";
 import axios from "axios";
+require('dotenv').config();
 
 const AddStudent = () => {
 	const currentYear = new Date().getFullYear();
@@ -80,12 +81,13 @@ const AddStudent = () => {
 						formData.append("file", file);
 						formData.append(
 							"upload_preset",
-							"attendify_add_student"
+							process.env.CLOUDINARY_UPLOAD_PRESET
 						); // Replace with your Cloudinary preset
 						formData.append("folder", folderName);
 
+						const cloudname = process.env.CLOUDINARY_CLOUD_NAME
 						return axios.post(
-							`https://api.cloudinary.com/v1_1/anandpanda/image/upload`, // Replace with your Cloudinary cloud name
+							`https://api.cloudinary.com/v1_1/${cloudname}/image/upload`, // Replace with your Cloudinary cloud name
 							formData
 						);
 					});
@@ -108,7 +110,7 @@ const AddStudent = () => {
 			console.log(uploadedStudents);
 			//   // Send the student data to the backend
 			//   await axios.post("/api/add_students", { students: uploadedStudents });
-
+			
 			//   // TODO : Add a success toast notification
 			//   alert("Students added successfully!");
 			setStudents([]); // Clear students list after successful submission

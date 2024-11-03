@@ -4,7 +4,7 @@ from bson import ObjectId
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from db_connections import preview_images_collection  # MongoDB collection import
-from ml.face_detection.face_detection import detect_faces_haar  # Face detection function import
+from ml.face_detection.face_detection import detect_faces_face_recognition  # Face detection function import
 
 @csrf_exempt
 def fetch_preview_images(request):
@@ -27,7 +27,7 @@ def fetch_preview_images(request):
                 public_id = cloudinary_response.get('public_id') 
 
                 # Run face detection on the image
-                bounding_boxes, best_rotation_angle = detect_faces_haar(image_file)
+                bounding_boxes, best_rotation_angle = detect_faces_face_recognition(image_file)
 
                 if bounding_boxes is None:
                     responses.append({

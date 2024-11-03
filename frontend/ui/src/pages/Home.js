@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   return (
@@ -14,9 +15,11 @@ const Home = () => {
               Quickly take attendance of a class with the power of attendify in
               your mobile device!
             </p>
-            <button className="bg-indigo-600 mt-8 rounded-full py-3 px-7 text-base font-semibold text-white hover:bg-indigo-700 cursor-pointer transition-all duration-500 md:w-fit w-full">
+            <Link to={"/takeattendance"}>
+              <button className="bg-indigo-600 mt-8 rounded-full py-3 px-7 text-base font-semibold text-white hover:bg-indigo-700 cursor-pointer transition-all duration-500 md:w-fit w-full">
                 Get Started
-            </button>
+              </button>
+            </Link>
           </div>
           <div className="w-full xl:col-span-7  lg:col-span-6 block pt-18">
             <div className="w-full  sm:w-auto lg:w-[60.8125rem] xl:ml-16">

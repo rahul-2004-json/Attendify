@@ -1,79 +1,87 @@
 import face_recognition
-import pickle
-import os
+import cloudinary
+import cloudinary.api
 import numpy as np
-from PIL import Image
-from face_detection.face_detection import detect_faces_haar # Assuming the detect_faces_haar is in a file named detect_faces_haar.py
+from utils.loadImageFromUrl import load_image_from_url
+from utils.For_ML.augmentImage import augment_images
+from utils.uploadImageToCloudinaryFolder import upload_images_to_cloudinary
+from utils.For_ML.crop_face import crop_and_resize_face
 
-def add_new_known_faces(students, image_file):
+def get_encodings(np_image):
     """
-    Given a list of student dictionaries (each containing enroll) and the class image file,
-    detect faces, add their face encodings to the existing encodings.pickle file.
-
-    :param students: List of student dictionaries with 'enroll' keys.
-    :param image_file: Class image file (path to the image).
-    """
+    Function to generate face encodings for a given image.
     
-    # Step 1: Detect faces using the detect_faces_haar function
-    bounding_boxes, best_angle = detect_faces_haar(image_file)
+    Parameters:
+    np_image (numpy.ndarray): The image in NumPy array format.
+    """
+    # Generate face encodings directly
+    face_encodings = face_recognition.face_encodings(np_image)
+    
+    # If no faces are found, return None
+    if not face_encodings:
+        return None
+    
+    print("Encodings found");
 
-    if bounding_boxes is None or len(bounding_boxes) == 0:
-        print("No faces detected in the image.")
-        return
+    return face_encodings[0]  # Return the first (and assumed only) face encoding
 
-    # Step 2: Rotate the image to the best angle for face recognition
-    image_pil = Image.open(image_file).rotate(best_angle, resample=Image.BICUBIC, expand=True)
-    image_np = np.array(image_pil)
 
-    new_encodings = []
-    new_enroll_numbers = []
+def generate_all_encodings(enroll, cloudinary_folder_path, image_urls):
+    """
+    Function to generate face encodings for new students and update their records in the database.
+    """
+    try:
+        # Initialize a list to hold encodings
+        encodings = []
 
-    for i, student in enumerate(students):
-        enroll = student.get('enroll')
+        first_cropped_image =  None
 
-        if not enroll:
-            print(f"Missing enrollment number for student: {student}")
-            continue
+        # Process each image to generate face encodings
+        for image_url in image_urls:
+            # Load the image from Cloudinary
+            np_image = load_image_from_url(image_url)
 
-        try:
-            # Extract the bounding box for the student's face
-            if i < len(bounding_boxes):
-                (x, y, w, h) = bounding_boxes[i]
-                face_image = image_np[y:y+h, x:x+w]
+            # crop and resize the face from the image
+            cropped_face = crop_and_resize_face(np_image)
 
-                # Step 3: Get face encodings for the detected face
-                face_encoding = face_recognition.face_encodings(face_image)
+            if first_cropped_image is None:
+                first_cropped_image = cropped_face
 
-                if face_encoding:
-                    new_encodings.append(face_encoding[0])
-                    new_enroll_numbers.append(enroll)
-                else:
-                    print(f"No face encoding found for student with enrollment: {enroll}")
+            # Generate face encodings from the cropped face
+            face_encodings = get_encodings(cropped_face)
 
-            else:
-                print(f"No bounding box for student with enrollment: {enroll}")
+            # Check if encodings were found
+            if face_encodings is not None:
+                encodings.append(face_encodings)
 
-        except Exception as e:
-            print(f"Error processing face for student with enrollment: {enroll}, Error: {e}")
+        # If only 1 image, augment the image and then generate encodings
+        if len(image_urls) == 1:
+            print("Augmenting image")
+            np_cropped_image = first_cropped_image
+            augmented_images = augment_images(np_cropped_image, 4)
+            
+            # Upload all augmented images at once
+            # upload_images_to_cloudinary(
+            #     image_list=augmented_images,
+            #     folder_path=cloudinary_folder_path,
+            #     enroll_id=enroll
+            # )
+            
+            # Generate encodings for each augmented image
+            for augmented_image in augmented_images:
+                face_encodings = get_encodings(augmented_image)
+                if face_encodings is not None:
+                    encodings.append(face_encodings)
 
-    # Step 4: Load existing encodings from pickle file (if it exists)
-    encodings_file = 'encodings.pickle'
-    if os.path.exists(encodings_file):
-        with open(encodings_file, 'rb') as f:
-            data = pickle.load(f)
-            known_encodings = data.get('encodings', [])
-            known_enroll_numbers = data.get('enrolls', [])
-    else:
-        known_encodings = []
-        known_enroll_numbers = []
+        # If no encodings were found, handle the case (e.g., log an error or skip updating)
+        if not encodings:
+            print(f"No face encodings found for student {enroll}.")
+            return None
 
-    # Step 5: Append the new encodings to the existing encodings
-    known_encodings.extend(new_encodings)
-    known_enroll_numbers.extend(new_enroll_numbers)
+        # Convert encodings list to a numpy array
+        encodings_array = np.array(encodings).tolist()  # Convert to list for MongoDB compatibility
 
-    # Step 6: Save the updated encodings and enroll numbers back to the pickle file
-    with open(encodings_file, 'wb') as f:
-        pickle.dump({"encodings": known_encodings, "enrolls": known_enroll_numbers}, f)
+        return encodings_array
 
-    print(f"New student face encodings added with enrollment numbers: {new_enroll_numbers}")
-
+    except Exception as e:
+        print(f"Error processing student {enroll}: {str(e)}")

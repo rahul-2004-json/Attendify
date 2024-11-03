@@ -7,9 +7,8 @@ import cv2
 # Fetch the image from the URL
 def load_image_from_url(url):
     response = requests.get(url)
-    print("In load_image_from_url")
+    
     # Use BytesIO to treat the response content as a file-like object
-
     image_pil = Image.open(BytesIO(response.content)).convert("RGB")
     
     # Convert the PIL image to a NumPy array

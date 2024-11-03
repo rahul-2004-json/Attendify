@@ -60,12 +60,12 @@ def generate_all_encodings(enroll, cloudinary_folder_path, image_urls):
             np_cropped_image = first_cropped_image
             augmented_images = augment_images(np_cropped_image, 4)
             
-            # Upload all augmented images at once
-            # upload_images_to_cloudinary(
-            #     image_list=augmented_images,
-            #     folder_path=cloudinary_folder_path,
-            #     enroll_id=enroll
-            # )
+            # # Upload all augmented images at once
+            upload_images_to_cloudinary(
+                image_list=augmented_images,
+                folder_path=cloudinary_folder_path,
+                enroll_id=enroll
+            )
             
             # Generate encodings for each augmented image
             for augmented_image in augmented_images:

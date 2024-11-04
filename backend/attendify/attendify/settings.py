@@ -35,8 +35,7 @@ SECRET_KEY = 'django-insecure-bwvp%yvyw=5=-_bi7rdm5&oyjx37s+v@-l38+f&h-9^x!fge8b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # Application definition
 
@@ -55,17 +54,16 @@ INSTALLED_APPS = [
     'corsheaders' ,
     'rest_framework'
 ]
-CORS_ALLOW_ALL_ORIGINS = True
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # CORS middleware here
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'attendify.urls'
@@ -73,6 +71,10 @@ ROOT_URLCONF = 'attendify.urls'
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     # Add other origins if needed
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',
 ]
 
 TEMPLATES = [

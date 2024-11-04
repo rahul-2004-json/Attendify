@@ -80,12 +80,14 @@ const AddStudent = () => {
 						formData.append("file", file);
 						formData.append(
 							"upload_preset",
-							"attendify_add_student"
-						); // Replace with your Cloudinary preset
+							process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET
+						);
 						formData.append("folder", folderName);
 
+						const cloudname =
+							process.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
 						return axios.post(
-							`https://api.cloudinary.com/v1_1/anandpanda/image/upload`, // Replace with your Cloudinary cloud name
+							`https://api.cloudinary.com/v1_1/${cloudname}/image/upload`, // Replace with your Cloudinary cloud name
 							formData
 						);
 					});
@@ -96,21 +98,24 @@ const AddStudent = () => {
 						(res) => res.data.secure_url
 					);
 
+					const { images, ...studentDataWithoutImages } = student;
+
 					// Prepare the student data with the Cloudinary folder URL
 					return {
-						...student,
+						...studentDataWithoutImages,
 						folder_url: folderName, // Construct the folder URL
 						image_urls: imageUrls,
 					};
 				})
 			);
 
-			console.log(uploadedStudents);
-			//   // Send the student data to the backend
-			//   await axios.post("/api/add_students", { students: uploadedStudents });
+			// Send the student data to the backend
+			await axios.post("/api/addStudents/add_students/", {
+				students: uploadedStudents,
+			});
 
-			//   // TODO : Add a success toast notification
-			//   alert("Students added successfully!");
+			// TODO : Add a success toast notification
+			alert("Students added successfully!");
 			setStudents([]); // Clear students list after successful submission
 		} catch (error) {
 			console.error("Error submitting students:", error);

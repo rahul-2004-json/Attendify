@@ -24,6 +24,7 @@ urlpatterns = [
     path('api/previewImages/', include('previewImages.urls')),
     path('api/deleteImage/', include('deleteImage.urls')),
     path('api/imageHandler/', include('image_handler.urls')),
+    path('api/markAttendance/', include('markAttendance.urls')),
 ]
 
 #For serving the media files in development by updating urls.py

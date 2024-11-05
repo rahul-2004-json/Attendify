@@ -11,7 +11,7 @@ def detect_faces_face_recognition(image_file):
 
         # Rotations to check
         angles = [0, 90, 180, 270]
-        best_angle = 0
+        best_rotated_image = None
         max_faces = 0
         best_bounding_boxes = []
         image_np_best = np.array(image_pil)  # Default to original orientation
@@ -25,29 +25,30 @@ def detect_faces_face_recognition(image_file):
             face_locations = face_recognition.face_locations(image_np, model="hog")
             
             # Convert face_locations to bounding boxes format [(x, y, w, h)]
-            bounding_boxes = [(left, top, right - left, bottom - top) for top, right, bottom, left in face_locations]
+            # bounding_boxes = [(left, top, right - left, bottom - top) for top, right, bottom, left in face_locations]
+            bounding_boxes = face_locations
             
             # Track the rotation with the most detected faces
             if len(bounding_boxes) > max_faces:
                 image_np_best = image_np
                 max_faces = len(bounding_boxes)
-                best_angle = angle
+                best_rotated_image = image_np
                 best_bounding_boxes = bounding_boxes
 
         # Draw bounding boxes on the best-rotated image
-        for (x, y, w, h) in best_bounding_boxes:
-            cv2.rectangle(image_np_best, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        # for (x, y, w, h) in best_bounding_boxes:
+        #     cv2.rectangle(image_np_best, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
         # Convert back to BGR format for display with OpenCV
-        image_np_best_bgr = cv2.cvtColor(image_np_best, cv2.COLOR_RGB2BGR)
+        # image_np_best_bgr = cv2.cvtColor(image_np_best, cv2.COLOR_RGB2BGR)
 
-        # Display the image with bounding boxes
-        cv2.imshow("Detected Faces", image_np_best_bgr)
-        cv2.waitKey(0)  # Wait for a key press to close the window
-        cv2.destroyAllWindows()
+        # # Display the image with bounding boxes
+        # cv2.imshow("Detected Faces", image_np_best_bgr)
+        # cv2.waitKey(0)  # Wait for a key press to close the window
+        # cv2.destroyAllWindows()
 
         # Return the best bounding boxes and rotation angle
-        return best_bounding_boxes, best_angle
+        return best_bounding_boxes, best_rotated_image
 
     except Exception as e:
         print(f"Error: {e}")

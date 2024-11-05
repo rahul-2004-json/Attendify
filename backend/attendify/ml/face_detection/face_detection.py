@@ -12,6 +12,7 @@ def detect_faces_face_recognition(image_file):
         # Rotations to check
         angles = [0, 90, 180, 270]
         best_rotated_image = None
+        best_angle = 0
         max_faces = 0
         best_bounding_boxes = []
         image_np_best = np.array(image_pil)  # Default to original orientation
@@ -30,6 +31,7 @@ def detect_faces_face_recognition(image_file):
             
             # Track the rotation with the most detected faces
             if len(bounding_boxes) > max_faces:
+                best_angle = angle
                 image_np_best = image_np
                 max_faces = len(bounding_boxes)
                 best_rotated_image = image_np
@@ -48,7 +50,7 @@ def detect_faces_face_recognition(image_file):
         # cv2.destroyAllWindows()
 
         # Return the best bounding boxes and rotation angle
-        return best_bounding_boxes, best_rotated_image
+        return best_bounding_boxes, best_rotated_image,best_angle
 
     except Exception as e:
         print(f"Error: {e}")

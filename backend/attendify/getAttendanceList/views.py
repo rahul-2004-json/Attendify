@@ -35,6 +35,7 @@ def fetch_students(request):
         status=200
     )
 
+
 """ This is valid for POST request using JSON data, csv will be parsed in the frontend and sent as JSON"""
 @csrf_exempt
 def upload_csv(request):

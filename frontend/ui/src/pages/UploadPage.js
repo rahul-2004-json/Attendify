@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const UploadPage = () => {
   const [imagesArray, setImages] = useState([]);
@@ -26,6 +27,32 @@ const UploadPage = () => {
   const handleDeleteImages = (index) => {
     setImages(imagesArray.filter((_, ind) => ind !== index));
   };
+
+  const handlePreviewDetection = async () => {
+    try {
+      const formdata = new FormData();
+
+      imagesArray.forEach((image) => {
+        formdata.append("files", image);
+      });
+
+      const response = await axios.post(
+        "/api/previewImages/fetch_preview_images/",
+        formdata,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+      alert("Error in preview detection");
+    }
+  };
+
+  console.log(imagesArray);
 
   return (
     <div>
@@ -64,9 +91,14 @@ const UploadPage = () => {
                     <div className="flex flex-col gap-2">
                       {imagesArray.map((file, index) => (
                         <div className="flex border p-2 rounded-md shadow-md shadow-indigo-300 items-center justify-between">
-                          <li key={index} className="truncate">{file.name}</li>
-                          <button className="text-white bg-red-500 rounded-full p-1 cursor-pointer" onClick={() => handleDeleteImages(index)}>
-                            <MdDelete/>
+                          <li key={index} className="truncate">
+                            {file.name}
+                          </li>
+                          <button
+                            className="text-white bg-red-500 rounded-full p-1 cursor-pointer"
+                            onClick={() => handleDeleteImages(index)}
+                          >
+                            <MdDelete />
                           </button>
                         </div>
                       ))}
@@ -90,7 +122,7 @@ const UploadPage = () => {
                 onChange={handleFileChange}
                 style={{ display: "none" }}
                 className="border rounded-md p-2 w-full"
-                capture ="environment"
+                capture="environment"
               />
               <div className="icon p-10" onClick={handleClickCameraInput}>
                 <div className="p-10 flex justify-center border-4 border-indigo-500 border-dashed rounded-lg">
@@ -111,8 +143,13 @@ const UploadPage = () => {
                     <div className="flex flex-col gap-2">
                       {imagesArray.map((file, index) => (
                         <div className="flex border p-2 rounded-md shadow-md shadow-indigo-300 items-center justify-between">
-                          <li key={index} className="truncate">{file.name}</li>
-                          <button className="text-white bg-red-500 rounded-full p-1 cursor-pointer" onClick={() => handleDeleteImages(index)}>
+                          <li key={index} className="truncate">
+                            {file.name}
+                          </li>
+                          <button
+                            className="text-white bg-red-500 rounded-full p-1 cursor-pointer"
+                            onClick={() => handleDeleteImages(index)}
+                          >
                             <MdDelete />
                           </button>
                         </div>
@@ -128,6 +165,7 @@ const UploadPage = () => {
         <div className="flex justify-center">
           <Link to={"/previewDetection"}>
             <button
+              onClick={handlePreviewDetection}
               className="mt-12 mb-10 bg-indigo-600 text-white rounded-full cursor-pointer font-semibold text-center shadow-xs transition-all duration-500 py-3 px-6 text-sm lg:ml-1 hover:bg-indigo-700"
             >
               Preview Detections

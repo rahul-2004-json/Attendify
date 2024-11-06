@@ -1,5 +1,6 @@
 import numpy as np
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+import cv2
 
 def augment_images(image, num_augmented=5):
     """
@@ -12,11 +13,6 @@ def augment_images(image, num_augmented=5):
     Returns:
     list: A list of augmented images as numpy arrays.
     """
-
-    # Ensure the image is in RGB format
-    if image.shape[-1] == 3 and isinstance(image, np.ndarray):
-        # Convert BGR to RGB if necessary
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Uncomment this if images are BGR
     
     # Reshape the image to add an additional dimension for the generator
     image = image.reshape((1,) + image.shape)  # shape: (1, height, width, channels)

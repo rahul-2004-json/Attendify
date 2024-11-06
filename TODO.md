@@ -1,8 +1,9 @@
 # TODO
 
-- image on clicking cross button are not removed from state
-- add toast notification on addStudent
 - Face recognition and sending the final attendance list
+- Implement face recogintion with the help of cloudinary
+- add toast notification on addStudent
+- image on clicking cross button are not removed from state
 
 - takeAttendance Page : move branch to top, batches below it, on selection of branch filter out the batches that can be selected
     e.g : Change batch from F to E when ece selected 

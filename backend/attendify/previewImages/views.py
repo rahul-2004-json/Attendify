@@ -27,7 +27,7 @@ def fetch_preview_images(request):
                 public_id = cloudinary_response.get('public_id') 
 
                 # Run face detection on the image
-                bounding_boxes, best_rotation_angle = detect_faces_face_recognition(image_file)
+                bounding_boxes, _, best_rotation_angle = detect_faces_face_recognition(image_file)
 
                 if bounding_boxes is None:
                     responses.append({

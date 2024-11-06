@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     'image_handler',
     'deleteImage' ,
     'corsheaders' ,
-    'rest_framework'
+    'rest_framework',
+    'markAttendance',
 ]
 
 MIDDLEWARE = [

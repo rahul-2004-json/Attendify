@@ -2,7 +2,7 @@ import requests
 import numpy as np
 from PIL import Image
 from io import BytesIO
-import cv2
+# import cv2
 
 # Fetch the image from the URL
 def load_image_from_url(url):
@@ -20,13 +20,13 @@ def load_image_from_url(url):
     # image_bgr = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
 
     # # Resize the image for better display (adjust width as needed)
-    # height, width = image_bgr.shape[:2]
+    # height, width = image_pil.shape[:2]
     # new_width = 800  # Desired width
     # new_height = int((new_width / width) * height)  # Maintain aspect ratio
-    # resized_image = cv2.resize(image_bgr, (new_width, new_height))
+    # resized_image = cv2.resize(image_pil)
 
-    # # Display the resized image using OpenCV
-    # cv2.imshow("Detected Faces", resized_image)
+    # #Display the resized image using OpenCV
+    # cv2.imshow("Detected Faces", image_np)
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
 

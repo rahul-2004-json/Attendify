@@ -6,7 +6,7 @@ def upload_images_to_cloudinary(image_list, folder_path, enroll_id):
     Uploads a list of images to Cloudinary.
 
     Parameters:
-    - image_list (list of numpy.ndarray): The images to upload, each in NumPy array format.
+    - image_list (list of numpy.ndarray): The images to upload, each in NumPy array format (RGB).
     - folder_path (str): The Cloudinary folder path to upload to.
     - enroll_id (str): Unique enrollment ID for naming each uploaded image.
 
@@ -16,8 +16,11 @@ def upload_images_to_cloudinary(image_list, folder_path, enroll_id):
     responses = []
     for idx, image in enumerate(image_list):
         try:
+            # Convert RGB to BGR
+            image_bgr = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+            
             # Encode the image to JPG format
-            _, image_bytes = cv2.imencode('.jpg', image)
+            _, image_bytes = cv2.imencode('.jpg', image_bgr)
             
             # Upload each image to Cloudinary with a unique public ID
             response = cloudinary.uploader.upload(
@@ -29,7 +32,6 @@ def upload_images_to_cloudinary(image_list, folder_path, enroll_id):
             )
             responses.append(response)
 
-        
         except Exception as e:
             print(f"Error uploading image {enroll_id}_aug_{idx + 1} to Cloudinary: {e}")
             

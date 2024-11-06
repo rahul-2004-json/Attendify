@@ -1,5 +1,4 @@
 import cv2
-import numpy as np
 import face_recognition
 
 def crop_and_resize_face(np_image):
@@ -22,7 +21,6 @@ def crop_and_resize_face(np_image):
     # If no faces are detected, return None
     if not face_location:
         return None
-
 
     # Crop the detected face region
     top, right, bottom, left = face_location

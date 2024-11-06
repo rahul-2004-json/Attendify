@@ -1,6 +1,5 @@
 import numpy as np
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-import cv2
 
 def augment_images(image, num_augmented=5):
     """
@@ -30,10 +29,13 @@ def augment_images(image, num_augmented=5):
     augmented_images = []
 
     # Generate augmented images
-    for _ in range(num_augmented):
-        # Generate one augmented image and convert it back to uint8
+    for i in range(num_augmented):
+        # Generate one augmented image
         aug_iter = datagen.flow(image, batch_size=1)
         augmented_image = next(aug_iter)[0].astype(np.uint8)
+        
+        # Convert to 3D shape (height, width, channels) for saving
+        augmented_image = augmented_image.reshape(augmented_image.shape[0], augmented_image.shape[1], 3)
         augmented_images.append(augmented_image)
 
     return augmented_images

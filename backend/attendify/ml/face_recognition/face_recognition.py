@@ -1,6 +1,4 @@
 import face_recognition
-import cloudinary
-import cloudinary.api
 import numpy as np
 from utils.loadImageFromUrl import load_image_from_url
 from utils.For_ML.augmentImage import augment_images

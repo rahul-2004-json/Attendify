@@ -7,6 +7,8 @@ charset-normalizer==3.4.0
 click==8.1.7
 cloudinary==1.41.0
 colorama==0.4.6
+contourpy==1.3.0
+cycler==0.12.1
 dataclasses==0.6
 Django==5.1.1
 django-cors-headers==4.4.0
@@ -19,6 +21,7 @@ face_detection==0.2.2
 face_recognition_models==0.3.0
 filelock==3.16.1
 flatbuffers==24.3.25
+fonttools==4.54.1
 fsspec==2024.9.0
 gast==0.6.0
 google-pasta==0.2.0
@@ -27,10 +30,12 @@ h5py==3.12.1
 idna==3.10
 Jinja2==3.1.4
 keras==3.6.0
+kiwisolver==1.4.7
 libclang==18.1.1
 Markdown==3.7
 markdown-it-py==3.0.0
 MarkupSafe==2.1.5
+matplotlib==3.9.2
 mdurl==0.1.2
 ml-dtypes==0.4.1
 mpmath==1.3.0
@@ -45,6 +50,7 @@ pillow==10.4.0
 protobuf==5.28.3
 Pygments==2.18.0
 pymongo==4.10.1
+pyparsing==3.2.0
 pyproject_hooks==1.2.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
@@ -52,13 +58,13 @@ pytz==2024.2
 requests==2.32.3
 rich==13.9.4
 scipy==1.14.1
+setuptools==75.2.0
 six==1.16.0
 sqlparse==0.5.1
 sympy==1.13.3
 tensorboard==2.18.0
 tensorboard-data-server==0.7.2
 tensorflow==2.18.0
-tensorflow-io-gcs-filesystem==0.31.0
 tensorflow_intel==2.18.0
 termcolor==2.5.0
 torch==2.4.1

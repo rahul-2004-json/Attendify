@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { MdDelete } from "react-icons/md";
 import { IoCloseOutline } from "react-icons/io5";
 import { IoCameraReverse } from "react-icons/io5";
+import { Link } from "react-router-dom";
 
 const DetectedFaces = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -22,12 +23,12 @@ const DetectedFaces = () => {
   };
 
   //-> This Function Needs to be changed , to retake the selected image
-  const handleImageRetake =(img)=>{
+  const handleImageRetake = (img) => {
     setImages(images.filter((image) => image !== img));
   };
 
   return (
-    <div>
+    <div className="flex flex-col justify-center">
       <div className="flex flex-col container mx-auto gap-5 md:p-12 mt-8">
         <h1 className="text-center text-2xl font-bold">Detected Faces</h1>
         {images &&
@@ -39,11 +40,21 @@ const DetectedFaces = () => {
                 className="w-25 h-20 cursor-pointer"
                 onClick={() => handleImageClick(image)} // Trigger zoom on click
               />
-              <button className=" text-white bg-red-500 rounded-full p-1" onClick={()=> handleImageRetake(image)}>
-                <IoCameraReverse  />
+              <button
+                className=" text-white bg-red-500 rounded-full p-1"
+                onClick={() => handleImageRetake(image)}
+              >
+                <IoCameraReverse />
               </button>
             </div>
           ))}
+      </div>
+      <div className="flex justify-center">
+        <Link to={"/markedAttendance"}>
+          <button className="mt-12 mb-10 bg-indigo-600 text-white rounded-full cursor-pointer font-semibold text-center shadow-xs transition-all duration-500 py-3 px-6 text-sm lg:ml-1 hover:bg-indigo-700">
+            Mark Attendance
+          </button>
+        </Link>
       </div>
 
       {/* Modal to display zoomed image */}
@@ -75,3 +86,5 @@ const DetectedFaces = () => {
 };
 
 export default DetectedFaces;
+
+

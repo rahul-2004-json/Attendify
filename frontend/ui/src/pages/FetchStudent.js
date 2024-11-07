@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { createClass } from "../redux/slices/newClass";
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Papa from "papaparse";
@@ -11,6 +13,9 @@ const FetchStudent = () => {
   const [csvFile, setCsvFile] = useState([]);
   const [parsedData, setParsedData] = useState([]);
   const [inputMethod, setInputMethod] = useState("database");
+
+  const dispatch = useDispatch();
+  const students = useSelector((state) => state.students.students);
 
   const years = [1, 2, 3, 4];
   const branches = ["CSE", "ECE", "Biotech", "IT", "BBA"];
@@ -85,7 +90,7 @@ const FetchStudent = () => {
     }
   };
 
-  console.log(parsedData);
+  //console.log(parsedData);
 
   // This triggers the click event of input field when the user clicks on image
   const handleClick = (e) => {
@@ -97,13 +102,17 @@ const FetchStudent = () => {
   };
 
   const handleNext = () => {
-    // Handle next button action
     console.log("Next clicked", {
       selectedBatches,
       selectedYear,
       selectedBranch,
       csvFile,
+      inputMethod
     });
+
+    console.log("Next clicked, dispatching createClass");
+
+    dispatch(createClass({ selectedBatches, selectedYear, selectedBranch}));
   };
 
   const handleInputMethodChange = (event) => {

@@ -15,6 +15,7 @@ def get_encodings(np_image):
     np_image (numpy.ndarray): The image in NumPy array format.
     """
     # Generate face encodings directly
+    
     face_encodings = face_recognition.face_encodings(np_image)
     
     # If no faces are found, return None

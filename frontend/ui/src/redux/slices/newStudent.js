@@ -7,7 +7,7 @@ const initialState = {
     error: null,
 };
 
-export const createClass = createAsyncThunk(
+export const addStudents = createAsyncThunk(
     "/createClass",
     async (classData) => {
       try {
@@ -16,35 +16,34 @@ export const createClass = createAsyncThunk(
             "Content-Type": "application/json",  
           },
         };
-
-      const batchParams = classData.selectedBatches.map(batch => `batch=${batch}`).join('&');
-      const apiUrl = `http://127.0.0.1:8001/api/getAttendanceList/fetch_students/?year=2022&branch=${classData.selectedBranch}&${batchParams}`;
-
-      const response = await axios.get(apiUrl, config);
-
-        return  response.data ;
+  
+        const response = await axios.get(
+          "axios call api for making a new class",
+          classData,
+          config
+        );
+        return response.data;
       } catch (error) {
         throw new Error(error.response.data.message);
       }
     }
   );
 
-const newClassSlice = createSlice({
+const newStudentSlice = createSlice({
     name: "newClass",
     initialState,
     reducers: {
       clearErrors: (state) => {
         state.error = null;
       },
-      resetNewClass: () => initialState,
+      resetNewStudent: () => initialState,
     },
     extraReducers: (builder) => {
       builder
-        .addCase(createClass.pending, (state) => {
+        .addCase(addStudents.pending, (state) => {
           state.loading = true;
         })
-        .addCase(createClass.fulfilled, (state, action) => {
-          console.log("Fulfilled case triggered with data:", action.payload);
+        .addCase(addStudents.fulfilled, (state, action) => {
           state.loading = false;
           state.students = action.payload.students.map(student => ({
             name: student.name,
@@ -52,14 +51,13 @@ const newClassSlice = createSlice({
             attendance: false ,
           })) || [] ;
         })
-        .addCase(createClass.rejected, (state, action) => {
+        .addCase(addStudents.rejected, (state, action) => {
           state.loading = false;
           state.error = action.error.message;
         })
         .addDefaultCase((state) => state);
     },
   });
-  
-  export const { clearErrors, resetNewClass } = newClassSlice.actions;
-  export default newClassSlice.reducer;
-  
+
+export const { clearErrors, resetNewStudent } = newStudentSlice.actions;
+export default newStudentSlice.reducer;

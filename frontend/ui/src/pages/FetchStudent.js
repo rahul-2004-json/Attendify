@@ -291,7 +291,7 @@ const FetchStudent = () => {
         <Link to={"/uploadImage"}>
           <button
             onClick={
-              inputMethod === "database" ? handleNextform : handleNextCSV
+              inputMethod === "database" ? handleNext : handleCsvChange
             }
             className="mt-12 mb-10 bg-indigo-600 text-white rounded-full cursor-pointer font-semibold text-center shadow-xs transition-all duration-500 py-3 px-6 text-sm lg:ml-1 hover:bg-indigo-700"
           >

@@ -7,6 +7,8 @@ from ml.face_detection.face_detection import detect_faces_face_recognition
 from utils.loadImageFromUrl import load_image_from_url
 from db_connections import students_collection
 
+students = students_collection.find({})
+
 @csrf_exempt
 def mark_attendance_view(request):
     """
@@ -31,12 +33,13 @@ def mark_attendance_view(request):
 
             all_recognized_students = []  # List to hold results from all images
 
-            
-
             # Process each Cloudinary URL
             for image_url in image_urls:
                 recognized_students = mark_attendance(image_url)
                 all_recognized_students.extend(recognized_students)  # Add recognized students to the overall list
+
+            # only have unique students in the list
+            all_recognized_students = [dict(t) for t in {tuple(d.items()) for d in all_recognized_students}]
 
             return JsonResponse({
                 "message": "Attendance marked successfully",
@@ -60,18 +63,16 @@ def mark_attendance(image_url):
     face_encodings = face_recognition.face_encodings(best_rotated_image, face_locations)
     recognized_students = []
 
-    students = students_collection.find({})
-
     if face_locations:
         for face_encoding in face_encodings:
-            matched_student = find_matching_student(face_encoding, students)
+            matched_student = find_matching_student(face_encoding)
 
             if matched_student:
                 recognized_students.append(matched_student)
 
     return recognized_students
 
-def find_matching_student(face_encoding, students):
+def find_matching_student(face_encoding):
     """
     Matches a given face encoding with student records in the database and selects the student
     with the highest similarity (lowest face distance).

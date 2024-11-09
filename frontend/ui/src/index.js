@@ -5,7 +5,7 @@ import App from './App';
 import StudentState from './context/fetchStudentcontext';
 import AddedStudentState from './context/addedStudentcontext';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
   <AddedStudentState>
@@ -15,4 +15,3 @@ root.render(
   </AddedStudentState>
   </React.StrictMode>
 );
-

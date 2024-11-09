@@ -1,9 +1,11 @@
+from datetime import datetime
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from db_connections import preview_images_collection  # MongoDB collection import
 from ml.face_detection.face_detection import detect_faces_face_recognition  # Face detection function import
 from utils.loadImageFromUrl import load_image_from_url  # Image loading function import
-
+from utils.loadImageFromUrl import load_image_from_url  # Image loading function import
+import json
 @csrf_exempt
 def fetch_preview_images(request):
     """
@@ -12,7 +14,7 @@ def fetch_preview_images(request):
     if request.method == 'POST':
         try:
             # Expecting JSON payload with a list of URLs
-            data = request.json()  # Ensure request content type is application/json
+            data = json.loads(request.body)  # Ensure request content type is application/json
             image_urls = data.get('urls', [])
 
             if not image_urls:

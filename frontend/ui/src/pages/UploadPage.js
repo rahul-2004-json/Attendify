@@ -1,15 +1,37 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { ImageContext } from "../context/imageContext";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const UploadPage = () => {
-  const [imagesArray, setImages] = useState([]);
+  const {
+    imagesArray,
+    setImagesArray,
+    setIsLoading,
+    setDetectedFaces,
+    setforwardImages,
+    setImageLinks,
+  } = useContext(ImageContext);
+
+  const notifySuccess = () => {
+    toast.success("Faces detected successfully 😊");
+  };
+
+  const notifyError = () => {
+    toast.error("Error in detecting faces 😞");
+  };
+
+  const notifymsg = () => {
+    toast.warn("No images selected for preview detection.");
+  };
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
       const files = Array.from(e.target.files);
-      setImages((prevFiles) => [...prevFiles, ...files]);
+      setImagesArray((prevFiles) => [...(prevFiles || []), ...files]);
     } else {
       console.error("No files selected");
     }
@@ -25,34 +47,75 @@ const UploadPage = () => {
   };
 
   const handleDeleteImages = (index) => {
-    setImages(imagesArray.filter((_, ind) => ind !== index));
+    setImagesArray(imagesArray.filter((_, ind) => ind !== index));
   };
 
-  const handlePreviewDetection = async () => {
-    try {
-      const formdata = new FormData();
+  // console.log(imagesArray);
 
-      imagesArray.forEach((image) => {
-        formdata.append("files", image);
+  if (!Array.isArray(imagesArray)) {
+    return <div>Images array is not available.</div>;
+  }
+
+  const handlePreviewDetection = async () => {
+    setIsLoading(true);
+    try {
+      if (imagesArray.length === 0) {
+        //TODO: Show a toast message instead of alert
+        notifymsg();
+        // alert("No images selected for preview detection.");
+        return;
+      }
+
+      // Step 1: Upload images to Cloudinary and get their URLs
+      const uploadPromises = imagesArray.map((file) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append(
+          "upload_preset",
+          process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET
+        );
+        formData.append("folder", "uploadedImages"); // Adjust the folder name as needed
+
+        const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
+        //console.log(cloudName);
+        return axios.post(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          formData
+        );
       });
 
+      // Wait for all images to upload and retrieve their URLs
+      const uploadResponses = await Promise.all(uploadPromises);
+      const urls = uploadResponses.map((res) => res.data.secure_url);
+
+      // console.log(urls);
+      setImageLinks(urls);
+
+      //Step 2: Send the array of image URLs to your backend
       const response = await axios.post(
         "/api/previewImages/fetch_preview_images/",
-        formdata,
+        { urls }, // send image URLs as the payload
         {
           headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
           },
         }
       );
+
+      notifySuccess();
+      // // Handle the response from the backend
+      setforwardImages(imagesArray);
+      setImagesArray([]);
       console.log(response.data);
+      setDetectedFaces(response.data.results);
     } catch (error) {
       console.error(error);
-      alert("Error in preview detection");
+      notifyError();
+      // alert("Error in preview detection");
+    } finally {
+      setIsLoading(false);
     }
   };
-
-  console.log(imagesArray);
 
   return (
     <div>
@@ -83,7 +146,7 @@ const UploadPage = () => {
                 </div>
               </div>
 
-              {imagesArray.length > 0 && (
+              {/* {imagesArray.length > 0 && (
                 <div className="file-names p-4">
                   <div className="font-bold">
                     <h3 className="text-center">Selected Files</h3>
@@ -106,7 +169,7 @@ const UploadPage = () => {
                     </div>
                   </ul>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
 
@@ -134,33 +197,32 @@ const UploadPage = () => {
                   />
                 </div>
               </div>
-
-              {imagesArray.length > 0 && (
-                <div className="file-names p-4">
-                  <div className="font-bold">
-                    <h3 className="text-center">Selected Files</h3>
-                  </div>
-                  <ul className="mt-4">
-                    <div className="flex flex-col gap-2">
-                      {imagesArray.map((file, index) => (
-                        <div className="flex border p-2 rounded-md shadow-md shadow-indigo-300 items-center justify-between">
-                          <li key={index} className="truncate">
-                            {file.name}
-                          </li>
-                          <button
-                            className="text-white bg-red-500 rounded-full p-1 cursor-pointer"
-                            onClick={() => handleDeleteImages(index)}
-                          >
-                            <MdDelete />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </ul>
-                </div>
-              )}
             </div>
           </div>
+          {imagesArray.length > 0 && (
+            <div className="file-names p-4">
+              <div className="font-bold">
+                <h3 className="text-center">Selected Files</h3>
+              </div>
+              <ul className="mt-4">
+                <div className="flex flex-col gap-2">
+                  {imagesArray.map((file, index) => (
+                    <div key={index} className="flex border p-2 rounded-md shadow-md shadow-indigo-300 items-center justify-between">
+                      <li key={index} className="truncate">
+                        {file.name}
+                      </li>
+                      <button
+                        className="text-white bg-red-500 rounded-full p-1 cursor-pointer"
+                        onClick={() => handleDeleteImages(index)}
+                      >
+                        <MdDelete />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </ul>
+            </div>
+          )}
         </div>
 
         <div className="flex justify-center">

@@ -37,7 +37,7 @@ def generate_all_encodings(enroll, cloudinary_folder_path, image_urls):
         # Process each image to generate face encodings
         for image_url in image_urls:
             # Load the image from Cloudinary
-            np_image = load_image_from_url(image_url)
+            np_image,_ = load_image_from_url(image_url)
 
             # crop and resize the face from the image
             cropped_face = crop_and_resize_face(np_image)

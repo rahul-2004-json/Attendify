@@ -29,12 +29,12 @@ const AddStudent = () => {
   useEffect(() => {}, [isLoading]);
 
   const notifySuccess = () =>
-    toast(
+    toast.success(
       students.length > 0
-        ? "Students added successfully!"
-        : "Student added successfully!"
+        ? "Students added successfully! 🎉"
+        : "Student added successfully! 🎉"
     );
-  const notifyFailure = () => toast("Failed to add students.");
+  const notifyFailure = () => toast.error("Failed to add students.😞");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

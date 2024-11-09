@@ -27,7 +27,7 @@ def fetch_students(request):
         "branch": branch
     })
 
-    student_list = [{"name": student['name'], "enroll": student['enroll'], "batch": student["batch"], "branch": student["branch"], "year": student["year"]} for student in students]
+    student_list = [{"name": student['name'], "enrollment": student['enroll'], "batch": student["batch"], "branch": student["branch"], "year": student["year"]} for student in students]
 
     return JsonResponse({
         "students": student_list, 

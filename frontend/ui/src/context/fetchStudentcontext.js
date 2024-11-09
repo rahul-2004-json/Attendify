@@ -106,6 +106,8 @@ export default function StudentState({ children }) {
     setStudents(parsedData);
   };
 
+  // console.log("from context:",students);
+
   return (
     <StudentsContext.Provider
       value={{

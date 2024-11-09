@@ -37,28 +37,51 @@ const UploadPage = () => {
 
   const handlePreviewDetection = async () => {
     try {
-      const formdata = new FormData();
-
-      imagesArray.forEach((image) => {
-        formdata.append("files", image);
+      if (imagesArray.length === 0) {
+        alert("No images selected for preview detection.");
+        return;
+      }
+  
+      // Step 1: Upload images to Cloudinary and get their URLs
+      const uploadPromises = imagesArray.map((file) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", process.env.REACT_APP_CLOUDINARY_ADD_IMAGE_UPLOAD_PRESET);
+        formData.append("folder", "ADD_IMAGE"); // Adjust the folder name as needed
+  
+        const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
+        //console.log(cloudName);
+        return axios.post(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          formData
+        );
       });
+  
+      // Wait for all images to upload and retrieve their URLs
+      const uploadResponses = await Promise.all(uploadPromises);
+      const urls = uploadResponses.map((res) => res.data.secure_url);
 
+      console.log(urls);
+  
+      //Step 2: Send the array of image URLs to your backend
       const response = await axios.post(
         "/api/previewImages/fetch_preview_images/",
-        formdata,
+        { urls }, // send image URLs as the payload
         {
           headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
           },
         }
       );
+  
+      // // Handle the response from the backend
       console.log(response.data);
+
     } catch (error) {
       console.error(error);
       alert("Error in preview detection");
     }
   };
-
   
 
   return (

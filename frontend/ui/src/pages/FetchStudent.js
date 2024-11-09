@@ -183,7 +183,7 @@ const FetchStudent = () => {
               {csvFile.length > 0 && (
                 <div className="file-names p-4">
                   <div className="font-bold">
-                    <h3 className="text-center">Selected Files</h3>
+                    <h3 className="text-center">Selected File</h3>
                   </div>
                   <ul className="mt-4">
                     <div className="flex flex-col gap-2">

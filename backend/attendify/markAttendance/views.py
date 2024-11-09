@@ -1,35 +1,45 @@
-from pymongo import MongoClient
-import numpy as np
-import face_recognition
-from PIL import Image
-import cv2
+import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+import numpy as np
+import face_recognition
 from ml.face_detection.face_detection import detect_faces_face_recognition
+from utils.loadImageFromUrl import load_image_from_url
 from db_connections import students_collection
-import matplotlib.pyplot as plt
 
+students = students_collection.find({})
 
 @csrf_exempt
 def mark_attendance_view(request):
     """
-    View to handle the attendance marking process.
+    View to handle the attendance marking process using Cloudinary image URLs.
     """
     if request.method == 'POST':
         try:
-            # Ensure the request has an image file
-            if 'image_file' not in request.FILES:
-                return JsonResponse({"error": "No image file uploaded"}, status=400)
+            try:
+                data = json.loads(request.body)
+            except json.JSONDecodeError:
+                return JsonResponse({"error": "Invalid JSON format"}, status=400)
 
-            # Get the uploaded image file
-            image_files = request.FILES.getlist('image_file')
+            # Ensure the request contains the URLs
+            if 'image_urls' not in data:
+                return JsonResponse({"error": "No image URLs provided"}, status=400)
+
+            # Get the list of Cloudinary image URLs
+            image_urls = data.get('image_urls', [])
+            
+            if not image_urls:
+                return JsonResponse({"error": "No image URLs found"}, status=400)
 
             all_recognized_students = []  # List to hold results from all images
 
-            # Process each uploaded image file
-            for image_file in image_files:
-                recognized_students = mark_attendance(image_file)
+            # Process each Cloudinary URL
+            for image_url in image_urls:
+                recognized_students = mark_attendance(image_url)
                 all_recognized_students.extend(recognized_students)  # Add recognized students to the overall list
+
+            # only have unique students in the list
+            all_recognized_students = [dict(t) for t in {tuple(d.items()) for d in all_recognized_students}]
 
             return JsonResponse({
                 "message": "Attendance marked successfully",
@@ -41,34 +51,25 @@ def mark_attendance_view(request):
 
     return JsonResponse({"error": "Invalid request method"}, status=400)
 
-def mark_attendance(image_file):
+def mark_attendance(image_url):
     """
-    Detects faces in the image, encodes them, and matches them with the database for attendance marking.
+    Detects faces in the image from Cloudinary URL, encodes them, and matches them with the database for attendance marking.
     """
-    # Detect faces in the uploaded image
-    detected_faces, best_rotated_image,best_angle= detect_faces_face_recognition(image_file)
-    face_encodings = face_recognition.face_encodings(best_rotated_image,detected_faces)
-    # print("Boxes Coordinates:",detected_faces)
+    # Fetch image from Cloudinary URL
+    _, image_pil = load_image_from_url(image_url)
+    
+    # Detect faces in the image
+    face_locations, best_rotated_image = detect_faces_face_recognition(image_pil)
+    face_encodings = face_recognition.face_encodings(best_rotated_image, face_locations)
     recognized_students = []
 
-    if detected_faces:
+    if face_locations:
         for face_encoding in face_encodings:
-            # top, right, bottom, left = face_location
-            # face_image = image_np[top:bottom, left:right]
-            # cv2.imshow("face_image", face_image)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
-            # print("Face Image shape:", face_image.shape)
-            # print("Face Image data type:", face_image.dtype)            
-            
-            # if face_encodings:
-            # face_encoding = face_encoding[0]
             matched_student = find_matching_student(face_encoding)
 
             if matched_student:
                 recognized_students.append(matched_student)
 
-    print("Recognized students:", recognized_students)
     return recognized_students
 
 def find_matching_student(face_encoding):
@@ -76,7 +77,6 @@ def find_matching_student(face_encoding):
     Matches a given face encoding with student records in the database and selects the student
     with the highest similarity (lowest face distance).
     """
-    students = students_collection.find({})
     best_match = None
     lowest_distance = float("inf")  # Initialize with a very high distance
 
@@ -104,8 +104,3 @@ def find_matching_student(face_encoding):
         return best_match
     else:
         return None  # Return None if no match within tolerance is found
-
-# Example usage
-# image_file = "path_to_image.jpg"
-# recognized_students = mark_attendance(image_file)
-# print("Recognized students:", recognized_students)

@@ -1,4 +1,3 @@
-from datetime import datetime
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from db_connections import preview_images_collection  # MongoDB collection import

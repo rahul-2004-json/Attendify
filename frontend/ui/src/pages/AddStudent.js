@@ -5,7 +5,7 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import { PiStudentBold } from "react-icons/pi";
 import axios from "axios";
 import { Hourglass } from "react-loader-spinner";
-import { ToastContainer, toast } from "react-toastify";
+import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const AddStudent = () => {

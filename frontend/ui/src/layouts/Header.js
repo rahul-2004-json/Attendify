@@ -6,6 +6,10 @@ import { IoCloseOutline } from "react-icons/io5";
 const Header = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
 
+  const handleMenuClick = () => {
+    setMenuOpen(false); // Close the menu when a link is clicked
+  };
+
   return (
     <>
       <div className="fixed top-0 left-0 w-full z-10">
@@ -62,6 +66,7 @@ const Header = () => {
                     <Link
                       to="/"
                       className="text-gray-500 text-base lg:text-base font-medium hover:text-indigo-700 transition-all duration-500 mb-2 block lg:mr-6 md:mb-0 lg:text-left"
+                      onClick={handleMenuClick}
                     >
                       Home
                     </Link>
@@ -70,6 +75,7 @@ const Header = () => {
                     <Link
                       to="/takeattendance"
                       className="text-gray-500 text-base lg:text-base font-medium hover:text-indigo-700 transition-all duration-500 mb-2 block lg:mr-6 md:mb-0 lg:text-left"
+                      onClick={handleMenuClick}
                     >
                       Take Attendance
                     </Link>
@@ -78,6 +84,7 @@ const Header = () => {
                     <Link
                       to="/addStudent"
                       className="text-gray-500 text-base lg:text-base font-medium hover:text-indigo-700 transition-all duration-500 mb-2 block lg:mr-6 md:mb-0 lg:text-left"
+                      onClick={handleMenuClick}
                     >
                       Add Student
                     </Link>

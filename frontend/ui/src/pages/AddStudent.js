@@ -20,6 +20,7 @@ const AddStudent = () => {
     const [formErrors, setFormErrors] = useState({}); // State for form errors
     const [showImagePopup, setShowImagePopup] = useState(false);
     const [selectedImages, setSelectedImages] = useState([]);
+    const [selectedStudentIndex, setSelectedStudentIndex] = useState(null);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -124,8 +125,9 @@ const AddStudent = () => {
         }
     };
 
-    const handleImagePreview = (images) => {
+    const handleImagePreview = (images, index) => {
         setSelectedImages(images);
+        setSelectedStudentIndex(index);
         setShowImagePopup(true);
     };
 
@@ -137,12 +139,14 @@ const AddStudent = () => {
         const updatedImages = selectedImages.filter((_, i) => i !== imageIndex);
         setSelectedImages(updatedImages);
 
-        setNewStudent((prev) => ({
-            ...prev,
-            images: prev.images.filter((_, i) => i !== imageIndex),
-        }));
+        setStudents((prev) => {
+            const updatedStudents = [...prev];
+            updatedStudents[selectedStudentIndex].images = updatedImages;
+            return updatedStudents;
+        });
 
         if (updatedImages.length === 0) {
+            handleRemoveStudent(selectedStudentIndex);
             setShowImagePopup(false);
         }
     };
@@ -188,7 +192,7 @@ const AddStudent = () => {
                     <div className="flex justify-center items-center">
                         <button
                             className="text-indigo-600"
-                            onClick={() => handleImagePreview(student.images)}
+                            onClick={() => handleImagePreview(student.images, index)}
                         >
                             <FaImages size={74} />
                         </button>

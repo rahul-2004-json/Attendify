@@ -9,9 +9,11 @@ import FetchStudent from "./pages/FetchStudent";
 import UploadPage from "./pages/UploadPage";
 import PreviewPage from "./pages/PreviewPage";
 import AddStudent from "./pages/AddStudent";
+import { ImageProvider } from "./context/ImageContext";
 
 function App() {
   return (
+    <ImageProvider>
     <Router>
     <div>
       <Routes>
@@ -31,6 +33,7 @@ function App() {
       </Routes>
     </div>
   </Router>
+  </ImageProvider>
   );
 }
 

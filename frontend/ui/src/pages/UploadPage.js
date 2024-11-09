@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { ImageContext } from "../context/ImageContext";
 
 const UploadPage = () => {
-  const [imagesArray, setImages] = useState([]);
+  const {imagesArray, setImagesArray} = useContext(ImageContext);
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
       const files = Array.from(e.target.files);
-      setImages((prevFiles) => [...prevFiles, ...files]);
+      setImagesArray((prevFiles) => [...(prevFiles || []), ...files]);
     } else {
       console.error("No files selected");
     }
@@ -25,8 +26,14 @@ const UploadPage = () => {
   };
 
   const handleDeleteImages = (index) => {
-    setImages(imagesArray.filter((_, ind) => ind !== index));
+    setImagesArray(imagesArray.filter((_, ind) => ind !== index));
   };
+
+  console.log(imagesArray);
+
+  if (!Array.isArray(imagesArray)) {
+    return <div>Images array is not available.</div>;
+  }
 
   const handlePreviewDetection = async () => {
     try {
@@ -52,7 +59,7 @@ const UploadPage = () => {
     }
   };
 
-  console.log(imagesArray);
+  
 
   return (
     <div>
@@ -71,6 +78,7 @@ const UploadPage = () => {
                 onChange={handleFileChange}
                 style={{ display: "none" }}
                 className="border rounded-md p-2 w-full"
+                multiple
               />
               <div className="icon p-10" onClick={handleClickFileInput}>
                 <div className="p-10 flex justify-center border-4 border-indigo-500 border-dashed rounded-lg">
@@ -82,7 +90,7 @@ const UploadPage = () => {
                 </div>
               </div>
 
-              {imagesArray.length > 0 && (
+              {/* {imagesArray.length > 0 && (
                 <div className="file-names p-4">
                   <div className="font-bold">
                     <h3 className="text-center">Selected Files</h3>
@@ -105,7 +113,7 @@ const UploadPage = () => {
                     </div>
                   </ul>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
 
@@ -134,6 +142,8 @@ const UploadPage = () => {
                 </div>
               </div>
 
+            </div>
+            </div>
               {imagesArray.length > 0 && (
                 <div className="file-names p-4">
                   <div className="font-bold">
@@ -158,8 +168,6 @@ const UploadPage = () => {
                   </ul>
                 </div>
               )}
-            </div>
-          </div>
         </div>
 
         <div className="flex justify-center">

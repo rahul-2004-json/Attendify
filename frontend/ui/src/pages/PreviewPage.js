@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, {useContext , useState } from "react";
 import { MdDelete } from "react-icons/md";
 import { IoCloseOutline } from "react-icons/io5";
 import { IoCameraReverse } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import { ImageContext } from "../context/ImageContext";
 
 const DetectedFaces = () => {
+  const { imagesArray, setImagesArray } = useContext(ImageContext);
   const [selectedImage, setSelectedImage] = useState(null);
   const [images, setImages] = useState([
     "/DetectedImages/Image1.jpg",
@@ -24,21 +26,23 @@ const DetectedFaces = () => {
 
   //-> This Function Needs to be changed , to retake the selected image
   const handleImageRetake = (img) => {
-    setImages(images.filter((image) => image !== img));
+    setImagesArray(images.filter((image) => image !== img));
   };
+
+  
 
   return (
     <div className="flex flex-col justify-center">
       <div className="flex flex-col container mx-auto gap-5 md:p-12 mt-8">
         <h1 className="text-center text-2xl font-bold">Detected Faces</h1>
-        {images &&
-          images.map((image) => (
-            <div className="flex border p-4 rounded-md shadow-md shadow-indigo-300 items-center justify-between mx-4">
+        {imagesArray &&
+          imagesArray.map((image, index) => (
+            <div key={index} className="flex border p-4 rounded-md shadow-md shadow-indigo-300 items-center justify-between mx-4">
               <img
-                src={image}
+                src={URL.createObjectURL(image)}
                 alt="detected-face"
                 className="w-25 h-20 cursor-pointer"
-                onClick={() => handleImageClick(image)} // Trigger zoom on click
+                onClick={() => handleImageClick(URL.createObjectURL(image))} // Trigger zoom on click
               />
               <button
                 className=" text-white bg-red-500 rounded-full p-1"

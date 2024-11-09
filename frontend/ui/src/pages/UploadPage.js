@@ -71,6 +71,7 @@ const UploadPage = () => {
                 onChange={handleFileChange}
                 style={{ display: "none" }}
                 className="border rounded-md p-2 w-full"
+                multiple
               />
               <div className="icon p-10" onClick={handleClickFileInput}>
                 <div className="p-10 flex justify-center border-4 border-indigo-500 border-dashed rounded-lg">

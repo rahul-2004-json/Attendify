@@ -30,4 +30,4 @@ def load_image_from_url(url):
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
 
-    return image_np
+    return image_np, image_pil

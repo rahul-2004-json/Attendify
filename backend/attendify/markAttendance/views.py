@@ -46,12 +46,12 @@ def mark_attendance(image_file):
     Detects faces in the image, encodes them, and matches them with the database for attendance marking.
     """
     # Detect faces in the uploaded image
-    detected_faces, best_rotated_image,best_angle= detect_faces_face_recognition(image_file)
-    face_encodings = face_recognition.face_encodings(best_rotated_image,detected_faces)
-    # print("Boxes Coordinates:",detected_faces)
+    image_pil = Image.open(image_file).convert("RGB")
+    face_locations, best_rotated_image = detect_faces_face_recognition(image_pil)
+    face_encodings = face_recognition.face_encodings(best_rotated_image, face_locations)
     recognized_students = []
 
-    if detected_faces:
+    if face_locations:
         for face_encoding in face_encodings:
             # top, right, bottom, left = face_location
             # face_image = image_np[top:bottom, left:right]

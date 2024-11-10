@@ -8,6 +8,7 @@ from utils.loadImageFromUrl import load_image_from_url
 from db_connections import students_collection
 
 students = students_collection.find({})
+students = list(students)
 
 @csrf_exempt
 def mark_attendance_view(request):

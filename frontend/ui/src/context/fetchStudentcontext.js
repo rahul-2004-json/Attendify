@@ -5,7 +5,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
 export const StudentsContext = createContext(null);
 
 export default function StudentState({ children }) {
@@ -18,21 +17,33 @@ export default function StudentState({ children }) {
   const [selectedBranch, setSelectedBranch] = useState("CSE");
   const [inputMethod, setInputMethod] = useState("database");
 
-  const notifySuccess =()=>{
-    toast.success(inputMethod === "database" ? "Selected from database successfully" : "Uploaded csv successfully");
-  }
+  const notifySuccess = () => {
+    toast.success(
+      inputMethod === "database"
+        ? "Selected from database successfully"
+        : "Uploaded csv successfully"
+    );
+  };
 
-  const notifyError =()=>{
-    toast.error(inputMethod === "database" ? "Error in selecting from database" : "Error in uploading csv");
-  }
+  const notifyError = () => {
+    toast.error(
+      inputMethod === "database"
+        ? "Error in selecting from database"
+        : "Error in uploading csv"
+    );
+  };
 
-  const notifyMessage = ()=>{
+  const notifyMessage = () => {
     toast.warning("File selected is not in csv format");
-  }
+  };
 
-  const notifyNofile = ()=>{  
-    toast.warning("No file selected");
-  }
+  const notifyNofile = () => {
+    toast.warning("File Not selected");
+  };
+
+  const sleep = () => {
+    return new Promise((resolve) => setTimeout(resolve, 2000));
+  };
 
   const handleCsvChange = (e) => {
     setLoading(true);
@@ -54,7 +65,7 @@ export default function StudentState({ children }) {
               present: row.Present,
             }));
             setParsedData(data);
-            notifySuccess();
+            // notifySuccess();
           },
           error: (error) => {
             notifyError();
@@ -78,7 +89,7 @@ export default function StudentState({ children }) {
             present: row.Present,
           }));
           setParsedData(formattedData);
-          notifySuccess();
+          // notifySuccess();
         };
         reader.onerror = (error) => {
           notifyError();
@@ -93,6 +104,7 @@ export default function StudentState({ children }) {
       notifyNofile();
       console.error("No files selected");
     }
+    setLoading(false);
   };
 
   const handleNextform = async () => {
@@ -119,6 +131,7 @@ export default function StudentState({ children }) {
           },
         }
       );
+      await sleep();
       setStudents(response.data.students);
       notifySuccess();
     } catch (error) {
@@ -131,10 +144,13 @@ export default function StudentState({ children }) {
   };
 
   const handleNextCSV = () => {
-    if(parsedData.length === 0){
+    if (parsedData.length === 0) {
       notifyNofile();
+    } else {
+      notifySuccess();
     }
     setStudents(parsedData);
+    setCsvFile([]);
   };
 
   // console.log("from context:",students);
@@ -157,6 +173,7 @@ export default function StudentState({ children }) {
         setSelectedBranch,
         inputMethod,
         setInputMethod,
+        parsedData,
       }}
     >
       {children}

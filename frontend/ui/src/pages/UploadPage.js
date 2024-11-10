@@ -69,6 +69,10 @@ const UploadPage = () => {
         return;
       }
 
+      //Declaring here so that when this function called again , new folder will be created
+      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+      const folderName = `uploadedImages/${timestamp}`;
+
       // Step 1: Upload images to Cloudinary and get their URLs
       const uploadPromises = imagesArray.map((file) => {
         const formData = new FormData();
@@ -77,7 +81,8 @@ const UploadPage = () => {
           "upload_preset",
           process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET
         );
-        formData.append("folder", "uploadedImages"); // Adjust the folder name as needed
+
+        formData.append("folder", folderName); // Adjust the folder name as needed
 
         const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
         //console.log(cloudName);
@@ -123,7 +128,7 @@ const UploadPage = () => {
   return (
     <>
       {loading ? (
-        <div className="flex justify-center min-h-screen items-center">
+        <div className="flex flex-col justify-center min-h-screen items-center">
           <Hourglass
             visible={true}
             height="80"
@@ -133,6 +138,9 @@ const UploadPage = () => {
             wrapperClass=""
             colors={["#3949ab", "#667eea"]}
           />
+          <h1 className="text-2xl font-bold text-center mt-5">
+            Fetching students...
+          </h1>
         </div>
       ) : (
         <div>

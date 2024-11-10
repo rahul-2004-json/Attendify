@@ -8,10 +8,12 @@ import { Hourglass } from "react-loader-spinner";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {RecognizedContext} from "../context/recognizedStudentcontext";
 
 const DetectedFaces = () => {
   const { isLoading, detectedFaces, forwardImages, imageLinks, setIsLoading } =
     useContext(ImageContext);
+  const {setRecognizedStudents} = useContext(RecognizedContext);
   const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {}, [isLoading]);
@@ -45,6 +47,7 @@ const DetectedFaces = () => {
         image_urls: imageLinks,
       });
       console.log(res.data);
+      setRecognizedStudents(res.data.recognized_students);
       notifySuccess();
     } catch (error) {
       notifyFailure();
@@ -57,7 +60,7 @@ const DetectedFaces = () => {
   return (
     <>
       {isLoading ? (
-        <div className="flex justify-center min-h-screen items-center">
+        <div className="flex flex-col justify-center min-h-screen items-center">
           <Hourglass
             visible={true}
             height="80"
@@ -67,6 +70,7 @@ const DetectedFaces = () => {
             wrapperClass=""
             colors={["#3949ab", "#667eea"]}
           />
+          <h1 className="text-center text-2xl font-bold mt-5">Detecting Faces...</h1>
         </div>
       ) : (
         <div className="flex flex-col justify-center">

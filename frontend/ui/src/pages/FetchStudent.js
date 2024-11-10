@@ -3,7 +3,6 @@ import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { StudentsContext } from "../context/fetchStudentcontext";
 
-
 const FetchStudent = () => {
   const {
     handleCsvChange,
@@ -20,6 +19,7 @@ const FetchStudent = () => {
     setSelectedBranch,
     inputMethod,
     setInputMethod,
+    parsedData,
   } = useContext(StudentsContext);
 
   const years = [2024, 2023, 2022, 2021, 2020];
@@ -189,7 +189,7 @@ const FetchStudent = () => {
                   <ul className="mt-4">
                     <div className="flex flex-col gap-2">
                       {csvFile.map((file, index) => (
-                        <div className="flex border p-2 rounded-md shadow-md shadow-indigo-300 items-center justify-between">
+                        <div key={index} className="flex border p-2 rounded-md shadow-md shadow-indigo-300 items-center justify-between">
                           <li key={index}>{file.name}</li>
                           <button
                             className=" text-white bg-red-500 rounded-full p-1 cursor-pointer"
@@ -214,7 +214,13 @@ const FetchStudent = () => {
       {/* </div> */}
 
       <div className="flex justify-center">
-        <Link to={"/uploadImage"}>
+        <Link
+          to={
+            inputMethod !== "database" && parsedData.length === 0
+              ? "/takeattendance"
+              : "/uploadImage"
+          }
+        >
           <button
             onClick={
               inputMethod === "database" ? handleNextform : handleNextCSV

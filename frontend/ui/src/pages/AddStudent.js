@@ -174,7 +174,7 @@ const AddStudent = () => {
   return (
     <>
       {isLoading ? (
-        <div className="flex justify-center min-h-screen items-center">
+        <div className="flex flex-col justify-center min-h-screen items-center">
           <Hourglass
             visible={true}
             height="80"
@@ -184,6 +184,10 @@ const AddStudent = () => {
             wrapperClass=""
             colors={["#3949ab", "#667eea"]}
           />
+          <h1 className="flex flex-col text-center text-2xl font-bold mt-5">
+            Hold on! 
+            <span>Adding students...</span>
+          </h1>
         </div>
       ) : (
         <div className="min-h-screen p-6 mt-5">

@@ -2,6 +2,9 @@ import { createContext, useState } from "react";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 export const StudentsContext = createContext(null);
 
@@ -15,7 +18,24 @@ export default function StudentState({ children }) {
   const [selectedBranch, setSelectedBranch] = useState("CSE");
   const [inputMethod, setInputMethod] = useState("database");
 
+  const notifySuccess =()=>{
+    toast.success(inputMethod === "database" ? "Selected from database successfully" : "Uploaded csv successfully");
+  }
+
+  const notifyError =()=>{
+    toast.error(inputMethod === "database" ? "Error in selecting from database" : "Error in uploading csv");
+  }
+
+  const notifyMessage = ()=>{
+    toast.warning("File selected is not in csv format");
+  }
+
+  const notifyNofile = ()=>{  
+    toast.warning("No file selected");
+  }
+
   const handleCsvChange = (e) => {
+    setLoading(true);
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       const fileType = file.name.split(".").pop().toLowerCase();
@@ -34,8 +54,10 @@ export default function StudentState({ children }) {
               present: row.Present,
             }));
             setParsedData(data);
+            notifySuccess();
           },
           error: (error) => {
+            notifyError();
             console.error("Error parsing CSV:", error);
           },
         });
@@ -56,15 +78,19 @@ export default function StudentState({ children }) {
             present: row.Present,
           }));
           setParsedData(formattedData);
+          notifySuccess();
         };
         reader.onerror = (error) => {
+          notifyError();
           console.error("Error reading Excel file:", error);
         };
         reader.readAsArrayBuffer(file);
       } else {
+        notifyMessage();
         console.error("Unsupported file format");
       }
     } else {
+      notifyNofile();
       console.error("No files selected");
     }
   };
@@ -94,15 +120,20 @@ export default function StudentState({ children }) {
         }
       );
       setStudents(response.data.students);
+      notifySuccess();
     } catch (error) {
       console.error("Error Fetching students:", error);
-      alert("Failed to Fetch students");
+      // alert("Failed to Fetch students");
+      notifyError();
     } finally {
       setLoading(false);
     }
   };
 
   const handleNextCSV = () => {
+    if(parsedData.length === 0){
+      notifyNofile();
+    }
     setStudents(parsedData);
   };
 

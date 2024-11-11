@@ -28,7 +28,6 @@ def mark_attendance_view(request):
 
             # Get the list of Cloudinary image URLs
             image_urls = data.get('image_urls', [])
-            print(image_urls)
             
             if not image_urls:
                 return JsonResponse({"error": "No image URLs found"}, status=400)
@@ -61,7 +60,7 @@ def mark_attendance(image_url):
     _, image_pil = load_image_from_url(image_url)
     
     # Detect faces in the image
-    face_locations, best_rotated_image,_ = detect_faces_face_recognition(image_pil)
+    face_locations, best_rotated_image, _ = detect_faces_face_recognition(image_pil)
     face_encodings = face_recognition.face_encodings(best_rotated_image, face_locations)
     recognized_students = []
 

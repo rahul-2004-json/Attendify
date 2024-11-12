@@ -19,10 +19,10 @@ const DetectedFaces = () => {
   useEffect(() => {}, [isLoading]);
 
   const notifySuccess = () => {
-    toast.success("Attendance Marked successfully! ✅");
+    toast.success("Attendance Marked successfully!");
   };
   const notifyFailure = () => {
-    toast.error("Failed to mark attendance! ❌");
+    toast.error("Failed to mark attendance!");
   };
 
   // Function to handle image click

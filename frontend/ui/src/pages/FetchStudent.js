@@ -36,68 +36,6 @@ const FetchStudent = () => {
     }
   };
 
-  const handleCsvChange = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      //Unecessary code : not sure
-      // const files = Array.from(e.target.files);
-      // setCsvFile((prevFiles) => [...prevFiles, ...files]);
-
-      const file = e.target.files[0];
-      const fileType = file.name.split(".").pop().toLowerCase();
-      setCsvFile([file]);
-
-      if (fileType === "csv") {
-        // Parse CSV file
-        Papa.parse(file, {
-          header: true,
-          skipEmptyLines: true,
-          complete: (results) => {
-            const data = results.data.map((row) => ({
-              name: row.Name,
-              enrollment: row.Enrollment,
-              year: row.Year,
-              batch: row.Batch,
-              present: row.Present, // Convert to boolean
-            }));
-            setParsedData(data);
-          },
-          error: (error) => {
-            console.error("Error parsing CSV:", error);
-          },
-        });
-      } else if (fileType === "xls" || fileType === "xlsx") {
-        // Parse Excel file
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const data = new Uint8Array(event.target.result);
-          const workbook = XLSX.read(data, { type: "array" });
-          const sheetName = workbook.SheetNames[0];
-          const sheet = workbook.Sheets[sheetName];
-          const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: "" });
-
-          const formattedData = jsonData.map((row) => ({
-            name: row.Name,
-            enrollment: row.Enrollment,
-            year: row.Year,
-            batch: row.Batch,
-            present: row.Present,
-          }));
-          setParsedData(formattedData);
-        };
-        reader.onerror = (error) => {
-          console.error("Error reading Excel file:", error);
-        };
-        reader.readAsArrayBuffer(file);
-      } else {
-        console.error("Unsupported file format");
-      }
-    } else {
-      console.error("No files selected");
-    }
-  };
-
-  //console.log(parsedData);
-
   // This triggers the click event of input field when the user clicks on image
   const handleClick = (e) => {
     document.getElementById("fileInput").click();
@@ -105,20 +43,6 @@ const FetchStudent = () => {
 
   const handleDeleteCSV = (index) => {
     setCsvFile(csvFile.filter((_, ind) => ind !== index));
-  };
-
-  const handleNext = () => {
-    console.log("Next clicked", {
-      selectedBatches,
-      selectedYear,
-      selectedBranch,
-      csvFile,
-      inputMethod
-    });
-
-    console.log("Next clicked, dispatching createClass");
-
-    dispatch(createClass({ selectedBatches, selectedYear, selectedBranch}));
   };
 
   const handleInputMethodChange = (event) => {
@@ -299,7 +223,7 @@ const FetchStudent = () => {
         >
           <button
             onClick={
-              inputMethod === "database" ? handleNext : handleCsvChange
+              inputMethod === "database" ? handleNextform : handleNextCSV
             }
             className="mt-12 mb-10 bg-indigo-600 text-white rounded-full cursor-pointer font-semibold text-center shadow-xs transition-all duration-500 py-3 px-6 text-sm lg:ml-1 hover:bg-indigo-700"
           >

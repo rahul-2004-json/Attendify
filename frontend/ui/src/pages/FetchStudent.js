@@ -1,24 +1,26 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { createClass } from "../redux/slices/newClass";
+import React, { useState, useContext } from "react";
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
-import Papa from "papaparse";
-import * as XLSX from "xlsx";
-import axios from "axios";
+import { StudentsContext } from "../context/fetchStudentcontext";
 
 const FetchStudent = () => {
-  const [selectedBatches, setSelectedBatches] = useState([]);
-  const [selectedYear, setSelectedYear] = useState("2024");
-  const [selectedBranch, setSelectedBranch] = useState("CSE");
-  const [csvFile, setCsvFile] = useState([]);
-  const [parsedData, setParsedData] = useState([]);
-  const [inputMethod, setInputMethod] = useState("database");
-
-  const dispatch = useDispatch();
-  const students = useSelector((state) => state.students.students);
-
-  
+  const {
+    handleCsvChange,
+    handleNextform,
+    handleNextCSV,
+    loading,
+    csvFile,
+    setCsvFile,
+    selectedBatches,
+    setSelectedBatches,
+    selectedYear,
+    setSelectedYear,
+    selectedBranch,
+    setSelectedBranch,
+    inputMethod,
+    setInputMethod,
+    parsedData,
+  } = useContext(StudentsContext);
 
   const years = [2024, 2023, 2022, 2021, 2020];
   const branches = ["CSE", "ECE"];
@@ -258,12 +260,12 @@ const FetchStudent = () => {
               {csvFile.length > 0 && (
                 <div className="file-names p-4">
                   <div className="font-bold">
-                    <h3 className="text-center">Selected Files</h3>
+                    <h3 className="text-center">Selected File</h3>
                   </div>
                   <ul className="mt-4">
                     <div className="flex flex-col gap-2">
                       {csvFile.map((file, index) => (
-                        <div className="flex border p-2 rounded-md shadow-md shadow-indigo-300 items-center justify-between">
+                        <div key={index} className="flex border p-2 rounded-md shadow-md shadow-indigo-300 items-center justify-between">
                           <li key={index}>{file.name}</li>
                           <button
                             className=" text-white bg-red-500 rounded-full p-1 cursor-pointer"
@@ -288,7 +290,13 @@ const FetchStudent = () => {
       {/* </div> */}
 
       <div className="flex justify-center">
-        <Link to={"/uploadImage"}>
+        <Link
+          to={
+            inputMethod !== "database" && parsedData.length === 0
+              ? "/takeattendance"
+              : "/uploadImage"
+          }
+        >
           <button
             onClick={
               inputMethod === "database" ? handleNext : handleCsvChange

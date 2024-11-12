@@ -4,7 +4,7 @@ export const RecognizedContext = createContext(null);
 
 export default function RecognizedStudentState({ children }) {
   const [recognizedStudents, setRecognizedStudents] = useState([]);
-//   console.log("From context:",recognizedStudents);
+  console.log("From context:",recognizedStudents);
   return (
     <RecognizedContext.Provider
       value={{ recognizedStudents, setRecognizedStudents }}

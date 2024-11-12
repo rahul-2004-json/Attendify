@@ -153,7 +153,7 @@ export default function StudentState({ children }) {
     setCsvFile([]);
   };
 
-  // console.log("from context:",students);
+  console.log("from context:",students);
 
   return (
     <StudentsContext.Provider
@@ -162,6 +162,7 @@ export default function StudentState({ children }) {
         handleCsvChange,
         handleNextform,
         handleNextCSV,
+        setLoading,
         loading,
         csvFile,
         setCsvFile,

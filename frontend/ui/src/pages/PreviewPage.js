@@ -3,7 +3,7 @@ import { MdDelete } from "react-icons/md";
 import { IoCloseOutline } from "react-icons/io5";
 import { IoCameraReverse } from "react-icons/io5";
 import { Link } from "react-router-dom";
-import { ImageContext } from "../context/imageContext";
+import { ImageContext } from "../context/ImageContext";
 import { Hourglass } from "react-loader-spinner";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -100,7 +100,7 @@ const DetectedFaces = () => {
               ))}
           </div>
           <div className="flex justify-center">
-            <Link to={"/markedAttendance"}>
+            <Link to={"/attendance"}>
               <button
                 onClick={() => {
                   markattendance();

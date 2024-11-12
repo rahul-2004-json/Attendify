@@ -66,15 +66,14 @@ const UploadPage = () => {
       //Step 2: Send the array of image URLs to your backend
       const response = await axios.post(
         "/api/previewImages/fetch_preview_images/",
-        { urls }, // send image URLs as the payload
+        JSON.stringify({ urls }), // send image URLs as the payload
         {
           headers: {
             "Content-Type": "application/json",
           },
         }
       );
-  
-      // // Handle the response from the backend
+
       console.log(response.data);
 
     } catch (error) {

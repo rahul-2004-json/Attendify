@@ -1,20 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
-import Papa from "papaparse";
-import * as XLSX from "xlsx";
+import { StudentsContext } from "../context/fetchStudentcontext";
 
 const FetchStudent = () => {
-  const [selectedBatches, setSelectedBatches] = useState([]);
-  const [selectedYear, setSelectedYear] = useState("");
-  const [selectedBranch, setSelectedBranch] = useState("");
-  const [csvFile, setCsvFile] = useState([]);
-  const [parsedData, setParsedData] = useState([]);
-  const [inputMethod, setInputMethod] = useState("database");
+  const {
+    handleCsvChange,
+    handleNextform,
+    handleNextCSV,
+    loading,
+    csvFile,
+    setCsvFile,
+    selectedBatches,
+    setSelectedBatches,
+    selectedYear,
+    setSelectedYear,
+    selectedBranch,
+    setSelectedBranch,
+    inputMethod,
+    setInputMethod,
+    parsedData,
+  } = useContext(StudentsContext);
 
-  const years = [1, 2, 3, 4];
-  const branches = ["CSE", "ECE", "Biotech", "IT", "BBA"];
-  const batches = ["F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9"];
+  const years = [2024, 2023, 2022, 2021, 2020];
+  const branches = ["CSE", "ECE"];
+  const csebatches = ["F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8"];
+  const ecebatches = ["E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8"];
 
   const handleBatchChange = (event) => {
     const value = event.target.value;
@@ -25,68 +36,6 @@ const FetchStudent = () => {
     }
   };
 
-  const handleCsvChange = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      //Unecessary code : not sure
-      // const files = Array.from(e.target.files);
-      // setCsvFile((prevFiles) => [...prevFiles, ...files]);
-
-      const file = e.target.files[0];
-      const fileType = file.name.split(".").pop().toLowerCase();
-      setCsvFile([file]);
-
-      if (fileType === "csv") {
-        // Parse CSV file
-        Papa.parse(file, {
-          header: true,
-          skipEmptyLines: true,
-          complete: (results) => {
-            const data = results.data.map((row) => ({
-              name: row.Name,
-              enrollment: row.Enrollment,
-              year: row.Year,
-              batch: row.Batch,
-              present: row.Present, // Convert to boolean
-            }));
-            setParsedData(data);
-          },
-          error: (error) => {
-            console.error("Error parsing CSV:", error);
-          },
-        });
-      } else if (fileType === "xls" || fileType === "xlsx") {
-        // Parse Excel file
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const data = new Uint8Array(event.target.result);
-          const workbook = XLSX.read(data, { type: "array" });
-          const sheetName = workbook.SheetNames[0];
-          const sheet = workbook.Sheets[sheetName];
-          const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: "" });
-
-          const formattedData = jsonData.map((row) => ({
-            name: row.Name,
-            enrollment: row.Enrollment,
-            year: row.Year,
-            batch: row.Batch,
-            present: row.Present,
-          }));
-          setParsedData(formattedData);
-        };
-        reader.onerror = (error) => {
-          console.error("Error reading Excel file:", error);
-        };
-        reader.readAsArrayBuffer(file);
-      } else {
-        console.error("Unsupported file format");
-      }
-    } else {
-      console.error("No files selected");
-    }
-  };
-
-  console.log(parsedData);
-
   // This triggers the click event of input field when the user clicks on image
   const handleClick = (e) => {
     document.getElementById("fileInput").click();
@@ -94,16 +43,6 @@ const FetchStudent = () => {
 
   const handleDeleteCSV = (index) => {
     setCsvFile(csvFile.filter((_, ind) => ind !== index));
-  };
-
-  const handleNext = () => {
-    // Handle next button action
-    console.log("Next clicked", {
-      selectedBatches,
-      selectedYear,
-      selectedBranch,
-      csvFile,
-    });
   };
 
   const handleInputMethodChange = (event) => {
@@ -119,6 +58,7 @@ const FetchStudent = () => {
             value="database"
             checked={inputMethod === "database"}
             onChange={handleInputMethodChange}
+            className="form-checkbox h-5 w-5 text-indigo-500 border-gray-300 rounded focus:ring-indigo-500 transition-all duration-200"
           />
           <img
             src="/images/db.png"
@@ -133,53 +73,57 @@ const FetchStudent = () => {
             value="upload"
             checked={inputMethod === "upload"}
             onChange={handleInputMethodChange}
+            className="form-checkbox h-5 w-5 text-indigo-500 border-gray-300 rounded focus:ring-indigo-500 transition-all duration-200"
           />
           <img
             src="/images/excel-icon.png"
             alt="upload-excel-file"
             className="w-30 h-10"
           />{" "}
-          Upload CSV
+          Upload csv
         </label>
       </div>
 
       {inputMethod === "database" ? (
         <>
-          <div className="border p-4 rounded-2xl shadow-lg shadow-indigo-400 m-4">
+          <div className="border p-4 rounded-2xl shadow-lg shadow-indigo-400 m-4 bg-white">
             <h1 className="font-bold mb-4 mt-3 text-center text-2xl flex gap-1 items-center justify-center">
               <img
                 src="/images/db.png"
                 alt="upload-excel-file"
-                className="w-30 h-10"
+                className="w-10 h-10"
               />
               Select From Database
             </h1>
-            <div className="mb-4 mt-4">
-              <label className="block mb-1">Select Batches</label>
-              <div className="grid grid-cols-2 gap-2">
-                {batches.map((batch) => (
-                  <div key={batch} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      value={batch}
-                      checked={selectedBatches.includes(batch)}
-                      onChange={handleBatchChange}
-                      className="mr-2"
-                    />
-                    <label>{batch}</label>
-                  </div>
+
+            {/* Branch Selection */}
+            <div className="mb-4">
+              <label className="block mb-2 font-semibold text-gray-700">
+                Select Branch
+              </label>
+              <select
+                value={selectedBranch}
+                onChange={(e) => setSelectedBranch(e.target.value)}
+                className="border rounded-lg p-2 w-full bg-gray-50 hover:bg-gray-100 shadow-md hover:shadow-lg transition-all duration-300 focus:ring-2 focus:ring-indigo-500"
+              >
+                {branches.map((branch) => (
+                  <option key={branch} value={branch}>
+                    {branch}
+                  </option>
                 ))}
-              </div>
+              </select>
             </div>
 
+            {/* Year Selection */}
             <div className="mb-4">
-              <label className="block mb-1">Select Year</label>
+              <label className="block mb-2 font-semibold text-gray-700">
+                Select Year
+              </label>
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(e.target.value)}
-                className="border rounded-md p-2 w-full"
+                className="border rounded-lg p-2 w-full bg-gray-50 hover:bg-gray-100 shadow-md hover:shadow-lg transition-all duration-300 focus:ring-2 focus:ring-indigo-500"
               >
-                <option value="">Select Year</option>
                 {years.map((year) => (
                   <option key={year} value={year}>
                     {year}
@@ -188,20 +132,27 @@ const FetchStudent = () => {
               </select>
             </div>
 
-            <div className="mb-4">
-              <label className="block mb-1">Select Branch</label>
-              <select
-                value={selectedBranch}
-                onChange={(e) => setSelectedBranch(e.target.value)}
-                className="border rounded-md p-2 w-full"
-              >
-                <option value="">Select Branch</option>
-                {branches.map((branch) => (
-                  <option key={branch} value={branch}>
-                    {branch}
-                  </option>
-                ))}
-              </select>
+            {/* Batch Selection */}
+            <div className="mb-4 mt-4">
+              <label className="block mb-2 font-semibold text-gray-700">
+                Select Batches
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {(selectedBranch === "CSE" ? csebatches : ecebatches).map(
+                  (batch) => (
+                    <div key={batch} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        value={batch}
+                        checked={selectedBatches.includes(batch)}
+                        onChange={handleBatchChange}
+                        className="form-checkbox h-5 w-5 text-indigo-500 border-gray-300 rounded focus:ring-indigo-500 transition-all duration-200"
+                      />
+                      <label className="ml-2 text-gray-700">{batch}</label>
+                    </div>
+                  )
+                )}
+              </div>
             </div>
           </div>
         </>
@@ -233,12 +184,12 @@ const FetchStudent = () => {
               {csvFile.length > 0 && (
                 <div className="file-names p-4">
                   <div className="font-bold">
-                    <h3 className="text-center">Selected Files</h3>
+                    <h3 className="text-center">Selected File</h3>
                   </div>
                   <ul className="mt-4">
                     <div className="flex flex-col gap-2">
                       {csvFile.map((file, index) => (
-                        <div className="flex border p-2 rounded-md shadow-md shadow-indigo-300 items-center justify-between">
+                        <div key={index} className="flex border p-2 rounded-md shadow-md shadow-indigo-300 items-center justify-between">
                           <li key={index}>{file.name}</li>
                           <button
                             className=" text-white bg-red-500 rounded-full p-1 cursor-pointer"
@@ -263,9 +214,17 @@ const FetchStudent = () => {
       {/* </div> */}
 
       <div className="flex justify-center">
-        <Link to={"/uploadImage"}>
+        <Link
+          to={
+            inputMethod !== "database" && parsedData.length === 0
+              ? "/takeattendance"
+              : "/uploadImage"
+          }
+        >
           <button
-            onClick={handleNext}
+            onClick={
+              inputMethod === "database" ? handleNextform : handleNextCSV
+            }
             className="mt-12 mb-10 bg-indigo-600 text-white rounded-full cursor-pointer font-semibold text-center shadow-xs transition-all duration-500 py-3 px-6 text-sm lg:ml-1 hover:bg-indigo-700"
           >
             Next

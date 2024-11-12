@@ -1,11 +1,11 @@
-import cloudinary.uploader
 from datetime import datetime
-from bson import ObjectId
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from db_connections import preview_images_collection  # MongoDB collection import
-from ml.face_detection.face_detection import detect_faces_haar  # Face detection function import
-
+from ml.face_detection.face_detection import detect_faces_face_recognition  # Face detection function import
+from utils.loadImageFromUrl import load_image_from_url  # Image loading function import
+from utils.loadImageFromUrl import load_image_from_url  # Image loading function import
+import json
 @csrf_exempt
 def fetch_preview_images(request):
     """
@@ -13,59 +13,44 @@ def fetch_preview_images(request):
     """
     if request.method == 'POST':
         try:
-            if 'files' not in request.FILES:
-                return JsonResponse({"error": "No image files uploaded"}, status=400)
+            # Expecting JSON payload with a list of URLs
+            data = json.loads(request.body)  # Ensure request content type is application/json
+            image_urls = data.get('urls', [])
 
-            files = request.FILES.getlist('files')
+            if not image_urls:
+                return JsonResponse({"error": "No URLs provided."}, status=400)
+
             responses = []
 
-            for image_file in files:
+            for image_url in image_urls:
+                # Load the image using load_from_url function (returns a NumPy image)
+                np_image, image_pil = load_image_from_url(image_url)
+                if np_image is None:
+                    responses.append({"error": f"Failed to fetch image from URL: {image_url}"})
+                    continue
 
-                cloudinary_response = cloudinary.uploader.upload(image_file)
-                image_url = cloudinary_response.get('secure_url') 
-                asset_id = cloudinary_response.get('asset_id')  
-                public_id = cloudinary_response.get('public_id') 
+                # Run face detection on the image file
+                face_locations, _, best_rotation_angle = detect_faces_face_recognition(image_pil)
 
-                # Run face detection on the image
-                bounding_boxes, best_rotation_angle = detect_faces_haar(image_file)
-
-                if bounding_boxes is None:
+                if face_locations is None:
                     responses.append({
-                        "asset_id": asset_id,
                         "error": "Face detection failed"
                     })
                     continue
 
-                #Convert bounding boxes and best_rotation_angle to JSON format
-                bounding_boxes = [[int(coord) for coord in bbox] for bbox in bounding_boxes]
+                # Convert face_locations and best_rotation_angle to JSON format
+                face_locations = [[int(coord) for coord in floc] for floc in face_locations]
                 best_rotation_angle = int(best_rotation_angle)
-                
-                #Data creation for MongoDB
-                image_doc = {
-                    "asset_id": asset_id,
-                    "image_url": image_url,
-                    "public_id": public_id,
-                    "bboxes": [{"bbox": bbox} for bbox in bounding_boxes],
-                    "best_rotation_angle": best_rotation_angle,
-                    "timestamp": datetime.utcnow().isoformat()
-                }
-
-                # Insert the document into MongoDB
-                insert_result =preview_images_collection.insert_one(image_doc)
-                object_id = str(insert_result.inserted_id) 
 
                 responses.append({
-                    "object_id": object_id,
-                    "asset_id": asset_id,
-                    "public_id": public_id,
                     "image_url": image_url,
-                    "number of detected faces": len(bounding_boxes),
-                    "bboxes": bounding_boxes,
+                    "number_of_detected_faces": len(face_locations),
+                    "face_locations": face_locations,
                     "best_rotation_angle": best_rotation_angle
                 })
 
             return JsonResponse({
-                "message": "Images uploaded and processed successfully",
+                "message": "Images processed successfully",
                 "results": responses
             }, status=201)
 

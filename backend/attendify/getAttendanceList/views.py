@@ -27,7 +27,7 @@ def fetch_students(request):
         "branch": branch
     })
 
-    student_list = [{"name": student['name'], "enroll": student['enroll']} for student in students]
+    student_list = [{"name": student['name'], "enrollment": student['enroll'], "batch": student["batch"], "branch": student["branch"], "year": student["year"]} for student in students]
 
     return JsonResponse({
         "students": student_list, 
@@ -35,7 +35,9 @@ def fetch_students(request):
         status=200
     )
 
+
 """ This is valid for POST request using JSON data, csv will be parsed in the frontend and sent as JSON"""
+"""
 @csrf_exempt
 def upload_csv(request):
     if request.method != 'POST':
@@ -53,7 +55,7 @@ def upload_csv(request):
             "enroll": {"$in": enrollment_numbers}
         })
 
-        student_list = [{"name": student['name'], "enroll": student['enroll']} for student in students]
+        student_list = [{"name": student['name'], "enroll": student['enroll'], "batch": student["batch"], "branch": student["branch"], "year": student["year"]} for student in students]
 
         return JsonResponse({
             "students": student_list,
@@ -63,8 +65,7 @@ def upload_csv(request):
         return JsonResponse({"error": "Invalid JSON data"}, status=400)
     except Exception as e:
         return JsonResponse({"error": f"An error occurred: {str(e)}"}, status=500)
-
-
+"""
 
 
 

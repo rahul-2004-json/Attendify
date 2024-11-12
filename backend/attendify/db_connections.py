@@ -1,7 +1,13 @@
 import pymongo
+import os
+from dotenv import load_dotenv
 
-# url = "mongodb+srv://anand:anandpanda@cluster0.krt9qbo.mongodb.net/"
-url = "mongodb://localhost:27017/"
+# Load the .env file
+load_dotenv()
+
+
+url = os.getenv('MONGODB_URI')
+# url = "mongodb://localhost:27017/"
 client = pymongo.MongoClient(url)
 
 db = client['attendify_data']

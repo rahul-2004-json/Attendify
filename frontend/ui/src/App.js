@@ -9,6 +9,7 @@ import FetchStudent from "./pages/FetchStudent";
 import UploadPage from "./pages/UploadPage";
 import PreviewPage from "./pages/PreviewPage";
 import AddStudent from "./pages/AddStudent";
+import Attendance from "./pages/Attendance";
 import { ToastContainer, Bounce } from "react-toastify";
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
               <Route path="/uploadImage" element={<UploadPage />} />
               <Route path="/previewDetection" element={<PreviewPage />} />
               <Route path="/addStudent" element={<AddStudent />} />
+              <Route path="/attendance" element={<Attendance />} />
               {/* <Route path="/upload" element={<UploadImage/>}/> */}
             </Route>
 

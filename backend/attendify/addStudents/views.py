@@ -20,7 +20,7 @@ def add_students(request):
                 return JsonResponse({"error": "No student data provided"}, status=400)
 
             for student in students_data:
-                name = student.get('name')
+                name = student.get('name')   
                 enroll = student.get('enroll')
                 batch = student.get('batch')
                 year = student.get('year')

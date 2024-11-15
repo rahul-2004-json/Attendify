@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import { TbCirclePlus } from "react-icons/tb";
 import { FaImages, FaFolderOpen } from "react-icons/fa";
 import { AiFillCloseCircle } from "react-icons/ai";
@@ -25,8 +25,6 @@ const AddStudent = () => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [selectedStudentIndex, setSelectedStudentIndex] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {}, [isLoading]);
 
   const notifySuccess = () =>
     toast.success(

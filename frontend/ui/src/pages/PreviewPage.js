@@ -1,9 +1,7 @@
-import React, { useState, useContext, useEffect } from "react";
-import { MdDelete } from "react-icons/md";
-import { IoCloseOutline } from "react-icons/io5";
+import React, { useState, useContext, useRef } from "react";
 import { IoCameraReverse } from "react-icons/io5";
 import { Link } from "react-router-dom";
-import { ImageContext } from "../context/ImageContext";
+import { ImageContext } from "../context/imageContext";
 import { Hourglass } from "react-loader-spinner";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -23,7 +21,6 @@ const DetectedFaces = () => {
 	} = useContext(ImageContext);
 	const { setRecognizedStudents } = useContext(RecognizedContext);
 
-	const [selectedImage, setSelectedImage] = useState(null);
 	const [showRetakeModal, setShowRetakeModal] = useState(false);
 	const [retakeIndex, setRetakeIndex] = useState(null);
 
@@ -31,7 +28,22 @@ const DetectedFaces = () => {
 	const [uploading, setUploading] = useState(false);
 	const [processing, setProcessing] = useState(false);
 
-	useEffect(() => {}, [isLoading]);
+	const [scales, setScales] = useState({}); // Store scales for each image
+
+	const imageRefs = useRef([]);
+
+	const handleImageLoad = (index) => {
+		const img = imageRefs.current[index];
+		if (img) {
+			// Calculate scale factors for this specific image
+			const scaleX = img.clientWidth / img.naturalWidth;
+			const scaleY = img.clientHeight / img.naturalHeight;
+			setScales((prevScales) => ({
+				...prevScales,
+				[index]: { scaleX, scaleY },
+			}));
+		}
+	};
 
 	const notifySuccess = () => {
 		toast.success("Attendance Marked successfully!");
@@ -40,20 +52,10 @@ const DetectedFaces = () => {
 		toast.error("Failed to mark attendance!");
 	};
 
-	// Handle image click to zoom
-	const handleImageClick = (imageSrc) => {
-		setSelectedImage(imageSrc);
-	};
-
-	// Close modal for zoom
-	const handleCloseModal = () => {
-		setSelectedImage(null);
-	};
-
 	// Handle retake click
 	const handleImageRetake = (retakeIndex) => {
-		setShowRetakeModal(true); // Open the modal
 		setRetakeIndex(retakeIndex);
+		setShowRetakeModal(true);
 	};
 
 	// Close retake modal
@@ -124,12 +126,13 @@ const DetectedFaces = () => {
 			toast.success("Image updated successfully!");
 		} catch (error) {
 			console.error("Failed to upload new image:", error);
+
 			toast.error("Failed to update image!");
 		} finally {
 			setIsLoading(false);
 			setRetakeIndex(null);
-			closeRetakeModal();
 			setProcessing(false); // Stop processing the image
+			setShowRetakeModal(false); // Close the modal
 		}
 	};
 
@@ -152,6 +155,7 @@ const DetectedFaces = () => {
 		}
 	};
 
+	console.log(showRetakeModal);
 	return (
 		<>
 			{isLoading || uploading || processing ? (
@@ -181,20 +185,54 @@ const DetectedFaces = () => {
 							forwardImages.map((image, index) => (
 								<div
 									key={index}
-									className="flex border p-4 rounded-md shadow-md shadow-indigo-300 items-center justify-between mx-4"
+									className="relative border p-4 rounded-md shadow-md shadow-indigo-300 items-center justify-between mx-4"
 								>
-									<img
-										src={URL.createObjectURL(image)}
-										alt="detected-face"
-										className="w-25 h-20 cursor-pointer"
-										onClick={() =>
-											handleImageClick(
-												URL.createObjectURL(image)
-											)
-										}
-									/>
+									<div className="relative">
+										<img
+											src={URL.createObjectURL(image)}
+											alt="detected-face"
+											ref={(el) =>
+												(imageRefs.current[index] = el)
+											} // Store ref for each image
+											onLoad={() =>
+												handleImageLoad(index)
+											} // Pass the index for this image
+											style={{
+												transform: `rotate(${detectedFaces[index].best_rotation_angle}deg)`,
+											}}
+											className="w-full h-auto"
+										/>
+										{/* Bounding boxes */}
+										{scales[index] &&
+											detectedFaces[
+												index
+											].face_locations.map((loc, i) => (
+												<div
+													key={i}
+													className="absolute border-2 border-green-500"
+													style={{
+														top:
+															loc[0] *
+															scales[index]
+																.scaleY,
+														left:
+															loc[3] *
+															scales[index]
+																.scaleX,
+														width:
+															(loc[1] - loc[3]) *
+															scales[index]
+																.scaleX,
+														height:
+															(loc[2] - loc[0]) *
+															scales[index]
+																.scaleY,
+													}}
+												></div>
+											))}
+									</div>
 									<button
-										className="text-white bg-red-500 rounded-full p-1"
+										className="text-white bg-red-500 rounded-full p-1 mt-2"
 										onClick={() => handleImageRetake(index)}
 									>
 										<IoCameraReverse />
@@ -213,32 +251,7 @@ const DetectedFaces = () => {
 						</Link>
 					</div>
 
-					{/* Modal for zoomed image */}
-					{selectedImage && (
-						<div
-							className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-							onClick={handleCloseModal}
-						>
-							<div
-								className="relative bg-white p-4 rounded-2xl mx-3"
-								onClick={(e) => e.stopPropagation()}
-							>
-								<img
-									src={selectedImage}
-									alt="zoomed"
-									className="max-w-full max-h-screen"
-								/>
-								<button
-									className="absolute top-2 right-2 text-white bg-red-500 rounded-full p-2"
-									onClick={handleCloseModal}
-								>
-									<IoCloseOutline size={20} />
-								</button>
-							</div>
-						</div>
-					)}
-
-					{/* Modal for retake options */}
+					{/* Retake Modal */}
 					{showRetakeModal && (
 						<div
 							className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
@@ -265,7 +278,9 @@ const DetectedFaces = () => {
 									<button
 										className="bg-green-500 text-white px-4 py-2 rounded"
 										onClick={() =>
-											console.log("Open Camera Interface")
+											document
+												.getElementById("cameraInput")
+												.click()
 										}
 									>
 										Camera
@@ -276,6 +291,19 @@ const DetectedFaces = () => {
 									id="uploadInput"
 									hidden
 									accept="image/*"
+									onChange={(e) =>
+										handleUpload(
+											Array.from(e.target.files),
+											retakeIndex
+										)
+									}
+								/>
+								<input
+									type="file"
+									id="cameraInput"
+									hidden
+									accept="image/*"
+									capture="environment"
 									onChange={(e) =>
 										handleUpload(
 											Array.from(e.target.files),

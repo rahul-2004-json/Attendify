@@ -91,7 +91,7 @@ const FetchStudent = () => {
       <div className="flex gap-4 mt-10 ml-4 mr-4 mb-2 md:p-12 justify-between">
         <button
           onClick={() => handleInputMethodChange("database")}
-          className={`bg-indigo-600 text-white rounded-full cursor-pointer font-semibold text-center shadow-xs transition-all duration-500 py-3 px-6 text-sm lg:ml-1 hover:bg-indigo-700`}
+          className={`bg-indigo-600 text-white rounded-2xl cursor-pointer font-semibold text-center shadow-xs transition-all duration-500 py-3 px-6 text-sm lg:ml-1 hover:bg-indigo-700`}
         >
           <div className="flex gap-1 font-bold text-2xl items-center">
             Database
@@ -104,7 +104,7 @@ const FetchStudent = () => {
         </button>
         <button
           onClick={() => handleInputMethodChange("upload")}
-          className={`bg-indigo-600 text-white rounded-full cursor-pointer font-semibold text-center shadow-xs transition-all duration-500 py-3 px-6 text-sm lg:ml-1 hover:bg-indigo-700`}
+          className={`bg-indigo-600 text-white rounded-2xl cursor-pointer font-semibold text-center shadow-xs transition-all duration-500 py-3 px-6 text-sm lg:ml-1 hover:bg-indigo-700`}
         >
           <div className="flex gap-1 font-bold text-2xl items-center">
             Upload

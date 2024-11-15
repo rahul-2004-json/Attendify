@@ -3,7 +3,7 @@ import { useSwipeable } from "react-swipeable";
 import * as XLSX from "xlsx";
 import { StudentsContext } from "../context/fetchStudentcontext";
 import { RecognizedContext } from "../context/recognizedStudentcontext";
-import { ImageContext } from "../context/ImageContext";
+import { ImageContext } from "../context/imageContext";
 import { Hourglass } from "react-loader-spinner";
 
 

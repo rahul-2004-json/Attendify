@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { ImageContext } from "../context/ImageContext";
+import { ImageContext } from "../context/imageContext";
 import { Hourglass } from "react-loader-spinner";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

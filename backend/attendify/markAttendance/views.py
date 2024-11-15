@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import numpy as np
 import face_recognition
+from PIL import Image
 from ml.face_detection.face_detection import detect_faces_face_recognition
 from utils.loadImageFromUrl import load_image_from_url
 from db_connections import students_collection
@@ -22,25 +23,27 @@ def mark_attendance_view(request):
             except json.JSONDecodeError:
                 return JsonResponse({"error": "Invalid JSON format"}, status=400)
 
-            # Ensure the request contains the URLs
-            if 'image_urls' not in data:
-                return JsonResponse({"error": "No image URLs provided"}, status=400)
+            # Ensure the request contains the detections key
+            if 'detections' not in data:
+                return JsonResponse({"error": "No detections provided"}, status=400)
 
-            # Get the list of Cloudinary image URLs
-            image_urls = data.get('image_urls', [])
+            # Get the list of detections
+            detections = data.get('detections', [])
             
-            if not image_urls:
-                return JsonResponse({"error": "No image URLs found"}, status=400)
+            if not detections:
+                return JsonResponse({"error": "No detections found"}, status=400)
 
             all_recognized_students = []  # List to hold results from all images
 
-            # Process each Cloudinary URL
-            for image_url in image_urls:
-                recognized_students = mark_attendance(image_url)
+            # Process each detection
+            for detection in detections:
+                recognized_students = process_detection(detection)
                 all_recognized_students.extend(recognized_students)  # Add recognized students to the overall list
 
             # only have unique students in the list
             all_recognized_students = [dict(t) for t in {tuple(d.items()) for d in all_recognized_students}]
+
+            print(all_recognized_students)
 
             return JsonResponse({
                 "message": "Attendance marked successfully",
@@ -52,26 +55,45 @@ def mark_attendance_view(request):
 
     return JsonResponse({"error": "Invalid request method"}, status=400)
 
-def mark_attendance(image_url):
+def process_detection(detection):
     """
-    Detects faces in the image from Cloudinary URL, encodes them, and matches them with the database for attendance marking.
+    Processes a single detection to match face encodings with the database.
     """
-    # Fetch image from Cloudinary URL
-    _, image_pil = load_image_from_url(image_url)
-    
-    # Detect faces in the image
-    face_locations, best_rotated_image, _ = detect_faces_face_recognition(image_pil)
-    face_encodings = face_recognition.face_encodings(best_rotated_image, face_locations)
     recognized_students = []
 
-    if face_locations:
+    try:
+        # Ensure necessary keys are present in detection
+        if 'image_url' not in detection or 'face_locations' not in detection or 'best_rotation_angle' not in detection:
+            return []
+
+        image_url = detection['image_url']
+        face_locations = detection['face_locations']
+        rotation_angle = detection['best_rotation_angle']
+
+        # Load image from URL
+        image_np, image_pil = load_image_from_url(image_url)
+
+        # Rotate the image based on the provided angle
+        rotated_image_pil = image_pil
+        rotated_image_np = image_np
+        if rotation_angle != 0:
+            rotated_image_pil = image_pil.rotate(rotation_angle, resample=Image.BICUBIC, expand=True)
+            rotated_image_np = np.array(rotated_image_pil)
+
+        # Encode faces based on the provided face locations
+        face_encodings = face_recognition.face_encodings(rotated_image_np, face_locations)
+
         for face_encoding in face_encodings:
             matched_student = find_matching_student(face_encoding)
 
             if matched_student:
                 recognized_students.append(matched_student)
 
+    except Exception as e:
+        print(f"Error processing detection for image: {detection.get('image_url', 'Unknown')}. Error: {str(e)}")
+
     return recognized_students
+
 
 def find_matching_student(face_encoding):
     """
@@ -104,4 +126,4 @@ def find_matching_student(face_encoding):
     if best_match and lowest_distance <= 0.5:  # Adjust tolerance as needed
         return best_match
     else:
-        return None  # Return None if no match within tolerance is found
+        return None  # Return None if no match within tolerance is found    

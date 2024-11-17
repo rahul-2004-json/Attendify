@@ -4,15 +4,13 @@ from django.views.decorators.csrf import csrf_exempt
 import numpy as np
 import face_recognition
 from PIL import Image
-from ml.face_detection.face_detection import detect_faces_face_recognition
 from utils.loadImageFromUrl import load_image_from_url
-from db_connections import students_collection
 
-students = students_collection.find({})
-students = list(students)
+students = None
 
 @csrf_exempt
 def mark_attendance_view(request):
+    global students  # Declare students as global to modify the global variable
     """
     View to handle the attendance marking process using Cloudinary image URLs.
     """
@@ -24,9 +22,11 @@ def mark_attendance_view(request):
                 return JsonResponse({"error": "Invalid JSON format"}, status=400)
 
             # Ensure the request contains the detections key
-            if 'detections' not in data:
+            if 'students' not in data or 'detections' not in data:
                 return JsonResponse({"error": "No detections provided"}, status=400)
 
+            # Get the list of students
+            students = data.get('students', [])
             # Get the list of detections
             detections = data.get('detections', [])
             
@@ -116,14 +116,14 @@ def find_matching_student(face_encoding):
         if min_distance < lowest_distance:
             lowest_distance = min_distance
             best_match = {
-                "enrollment": student["enroll"],
+                "enrollment": student["enrollment"],
                 "name": student["name"],
                 "batch": student["batch"],
                 "distance": min_distance
             }
 
     # Check if a sufficiently close match was found
-    if best_match and lowest_distance <= 0.5:  # Adjust tolerance as needed
+    if best_match and lowest_distance <= 0.6:  # Adjust tolerance as needed
         return best_match
     else:
         return None  # Return None if no match within tolerance is found    

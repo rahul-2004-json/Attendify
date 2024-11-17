@@ -7,8 +7,12 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { RecognizedContext } from "../context/recognizedStudentcontext";
+import { StudentsContext } from "../context/fetchStudentcontext";
 
 const DetectedFaces = () => {
+	const {
+		students,
+	} = useContext(StudentsContext);
 	const {
 		isLoading,
 		detectedFaces,
@@ -142,6 +146,7 @@ const DetectedFaces = () => {
 			const res = await axios.post(
 				"/api/markAttendance/mark_attendance/",
 				{
+					students: students,
 					detections: detectedFaces,
 				}
 			);

@@ -161,7 +161,6 @@ const DetectedFaces = () => {
 		}
 	};
 
-	console.log(showRetakeModal);
 	return (
 		<>
 			{isLoading || uploading || processing ? (
@@ -240,7 +239,7 @@ const DetectedFaces = () => {
 									<div className="flex justify-between items-center">
 									<p className="font-semibold">Detected Faces : {detectedFaces[index].number_of_detected_faces}</p>
 									<button
-										className="text-white bg-red-500 rounded-full p-1 mt-2 flex items-center justify-center gap-2 p-2"
+										className="text-white bg-red-500 rounded-full mt-2 flex items-center justify-center gap-2 p-2"
 										onClick={() => handleImageRetake(index)}
 									>
 									    <span >Retake </span>

@@ -8,11 +8,10 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { RecognizedContext } from "../context/recognizedStudentcontext";
 import { StudentsContext } from "../context/fetchStudentcontext";
+import compressImage from "../utils/compressImage";
 
 const DetectedFaces = () => {
-	const {
-		students,
-	} = useContext(StudentsContext);
+	const { students } = useContext(StudentsContext);
 	const {
 		isLoading,
 		detectedFaces,
@@ -25,30 +24,29 @@ const DetectedFaces = () => {
 	} = useContext(ImageContext);
 	const { setRecognizedStudents } = useContext(RecognizedContext);
 
-  const [showRetakeModal, setShowRetakeModal] = useState(false);
-  const [retakeIndex, setRetakeIndex] = useState(null);
+	const [showRetakeModal, setShowRetakeModal] = useState(false);
+	const [retakeIndex, setRetakeIndex] = useState(null);
 
-  // Loading stages
-  const [uploading, setUploading] = useState(false);
-  const [processing, setProcessing] = useState(false);
+	// Loading stages
+	const [uploading, setUploading] = useState(false);
+	const [processing, setProcessing] = useState(false);
 
-  const [scales, setScales] = useState({}); // Store scales for each image~
+	const [scales, setScales] = useState({}); // Store scales for each image~
 
-  const imageRefs = useRef([]);
+	const imageRefs = useRef([]);
 
-  const handleImageLoad = (index) => {
-    const img = imageRefs.current[index];
-    if (img) {
-      // Calculate scale factors for this specific image
-      const scaleX = img.clientWidth / img.naturalWidth;
-      const scaleY = img.clientHeight / img.naturalHeight;
-      setScales((prevScales) => ({
-        ...prevScales,
-        [index]: { scaleX, scaleY },
-      }));
-    }
-  };
-
+	const handleImageLoad = (index) => {
+		const img = imageRefs.current[index];
+		if (img) {
+			// Calculate scale factors for this specific image
+			const scaleX = img.clientWidth / img.naturalWidth;
+			const scaleY = img.clientHeight / img.naturalHeight;
+			setScales((prevScales) => ({
+				...prevScales,
+				[index]: { scaleX, scaleY },
+			}));
+		}
+	};
 
 	const notifySuccess = () => {
 		toast.success("Attendance Marked successfully!");
@@ -63,70 +61,75 @@ const DetectedFaces = () => {
 		setShowRetakeModal(true);
 	};
 
- // Close retake modal
- const closeRetakeModal = () => {
-	setShowRetakeModal(false);
-};
+	// Close retake modal
+	const closeRetakeModal = () => {
+		setShowRetakeModal(false);
+	};
 
-  // Upload new image for retake
-  const handleUpload = async (newImage, index) => {
-    newImage = newImage[0];
+	// Upload new image for retake
+	const handleUpload = async (newImage, index) => {
+		newImage = newImage[0];
 
-    try {
-      setUploading(true); // Set uploading to true
+		try {
+			setUploading(true); // Set uploading to true
 
-      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-      const folderName = `uploadedImages/${timestamp}`;
+			// Compress the image
+			const compressedImage = await compressImage(newImage);
 
-      const formData = new FormData();
-      formData.append("file", newImage);
-      formData.append(
-        "upload_preset",
-        process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET
-      );
-      formData.append("folder", folderName);
+			const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+			const folderName = `uploadedImages/${timestamp}`;
 
-      const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
+			const formData = new FormData();
+			formData.append("file", compressedImage);
+			formData.append(
+				"upload_preset",
+				process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET
+			);
+			formData.append("folder", folderName);
 
-      // Upload to Cloudinary
-      const uploadResponse = await axios.post(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-        formData
-      );
+			const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
 
-      const url = uploadResponse.data.secure_url;
+			// Upload to Cloudinary
+			const uploadResponse = await axios.post(
+				`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+				formData
+			);
 
-      setUploading(false); // Stop the uploading state
+			const url = uploadResponse.data.secure_url;
 
-      setIsLoading(true);
+			setUploading(false); // Stop the uploading state
 
-      // Fetch preview image
-      const previewResponse = await axios.post(
-        "/api/previewImages/fetch_preview_images/",
-        { urls: [url] },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+			setIsLoading(true);
 
-      const previewImage = previewResponse.data.results[0];
+			// Fetch preview image
+			const previewResponse = await axios.post(
+				"/api/previewImages/fetch_preview_images/",
+				{ urls: [url] },
+				{
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			);
 
-      setProcessing(true); // Start processing the image
+			const previewImage = previewResponse.data.results[0];
 
-      // Update states using map to ensure immutability
-      setDetectedFaces((prev) =>
-        prev.map((item, idx) => (idx === index ? previewImage : item))
-      );
+			setProcessing(true); // Start processing the image
 
-      setforwardImages((prev) =>
-        prev.map((item, idx) => (idx === index ? newImage : item))
-      );
+			// Update states using map to ensure immutability
+			setDetectedFaces((prev) =>
+				prev.map((item, idx) => (idx === index ? previewImage : item))
+			);
 
-      setImageLinks((prev) =>
-        prev.map((item, idx) => (idx === index ? url : item))
-      );
+			setforwardImages((prev) =>
+				prev.map((item, idx) =>
+					idx === index ? compressedImage : item
+				)
+			);
+
+			setImageLinks((prev) =>
+				prev.map((item, idx) => (idx === index ? url : item))
+			);
 
 			toast.success("Image updated successfully!");
 		} catch (error) {
@@ -161,7 +164,6 @@ const DetectedFaces = () => {
 		}
 	};
 
-	// console.log(showRetakeModal);
 	return (
 		<>
 			{isLoading || uploading || processing ? (
@@ -204,7 +206,9 @@ const DetectedFaces = () => {
 												handleImageLoad(index)
 											} // Pass the index for this image
 											style={{
-												transform: `rotate(${-detectedFaces[index].best_rotation_angle}deg)`,
+												transform: `rotate(${-detectedFaces[
+													index
+												].best_rotation_angle}deg)`,
 											}}
 											className="w-full h-auto"
 										/>
@@ -238,14 +242,22 @@ const DetectedFaces = () => {
 											))}
 									</div>
 									<div className="flex justify-between items-center">
-									<p className="font-semibold">Detected Faces : {detectedFaces[index].number_of_detected_faces}</p>
-									<button
-										className="text-white bg-red-500 rounded-full p-1 mt-2 flex items-center justify-center gap-2 p-2"
-										onClick={() => handleImageRetake(index)}
-									>
-									    <span >Retake </span>
-										<IoCameraReverse />
-									</button>
+										<p className="font-semibold">
+											Detected Faces :{" "}
+											{
+												detectedFaces[index]
+													.number_of_detected_faces
+											}
+										</p>
+										<button
+											className="text-white bg-red-500 rounded-full mt-2 flex items-center justify-center gap-2 p-2"
+											onClick={() =>
+												handleImageRetake(index)
+											}
+										>
+											<span>Retake </span>
+											<IoCameraReverse />
+										</button>
 									</div>
 								</div>
 							))}

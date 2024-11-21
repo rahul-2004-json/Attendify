@@ -43,7 +43,7 @@ def mark_attendance_view(request):
             # only have unique students in the list
             all_recognized_students = [dict(t) for t in {tuple(d.items()) for d in all_recognized_students}]
 
-            print(all_recognized_students)
+            # print(all_recognized_students)
 
             return JsonResponse({
                 "message": "Attendance marked successfully",
@@ -122,8 +122,10 @@ def find_matching_student(face_encoding):
                 "distance": min_distance
             }
 
+    print(f"Best match: {best_match}, Distance: {lowest_distance}")
+
     # Check if a sufficiently close match was found
-    if best_match and lowest_distance <= 0.5:  # Adjust tolerance as needed
+    if best_match and lowest_distance <= 0.55:  # Adjust tolerance as needed
         return best_match
     else:
         return None  # Return None if no match within tolerance is found    

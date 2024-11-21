@@ -123,7 +123,7 @@ def find_matching_student(face_encoding):
             }
 
     # Check if a sufficiently close match was found
-    if best_match and lowest_distance <= 0.6:  # Adjust tolerance as needed
+    if best_match and lowest_distance <= 0.5:  # Adjust tolerance as needed
         return best_match
     else:
         return None  # Return None if no match within tolerance is found    

@@ -7,7 +7,7 @@ export default function ImageState({ children }) {
   const [detectedFaces, setDetectedFaces] = useState([]); //for each image
   const [isLoading, setIsLoading] = useState(false);
   // console.log("Forward Images Array:", forwardImages);
-  console.log("Detected Faces from context:", detectedFaces);
+  // console.log("Detected Faces from context:", detectedFaces);
   return (
     <ImageContext.Provider
       value={{

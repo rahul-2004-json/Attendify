@@ -161,7 +161,7 @@ const DetectedFaces = () => {
 		}
 	};
 
-	console.log(showRetakeModal);
+	// console.log(showRetakeModal);
 	return (
 		<>
 			{isLoading || uploading || processing ? (
@@ -204,7 +204,7 @@ const DetectedFaces = () => {
 												handleImageLoad(index)
 											} // Pass the index for this image
 											style={{
-												transform: `rotate(${detectedFaces[index].best_rotation_angle}deg)`,
+												transform: `rotate(${-detectedFaces[index].best_rotation_angle}deg)`,
 											}}
 											className="w-full h-auto"
 										/>

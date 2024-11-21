@@ -2,6 +2,7 @@ import cv2 # type: ignore
 import numpy as np
 from PIL import Image
 import face_recognition
+import dlib
 
 def detect_faces_face_recognition(image_pil):
     """Detect faces using face_recognition library with multiple rotations to find the best angle."""
@@ -40,6 +41,7 @@ def detect_faces_face_recognition(image_pil):
         # cv2.waitKey(0)  # Wait for a key press to close the window
         # cv2.destroyAllWindows()
 
+        print(f"Using CUDA: {dlib.DLIB_USE_CUDA}")
         # Return the best face locations, best rotated image and rotation angle
         return best_face_locations, best_rotated_image, best_angle
 

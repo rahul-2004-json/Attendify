@@ -2,7 +2,6 @@ import requests
 import numpy as np
 from PIL import Image
 from io import BytesIO
-import cv2
 
 # Fetch the image from the URL
 def load_image_from_url(url):
@@ -17,8 +16,8 @@ def load_image_from_url(url):
     print("Image loaded successfully.")
 
     # # print image dimensions and size
-    print("Image dimensions:", image_np.shape)
-    print("Image size:", image_np.size)
+    # print("Image dimensions:", image_np.shape)
+    # print("Image size:", image_np.size)
     
     # # Convert RGB to BGR for OpenCV
     # image_bgr = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)

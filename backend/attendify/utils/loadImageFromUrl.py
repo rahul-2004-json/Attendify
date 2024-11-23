@@ -2,7 +2,6 @@ import requests
 import numpy as np
 from PIL import Image
 from io import BytesIO
-import cv2
 
 # Fetch the image from the URL
 def load_image_from_url(url):

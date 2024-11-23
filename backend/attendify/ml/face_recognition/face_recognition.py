@@ -8,7 +8,7 @@ from utils.For_ML.crop_face import crop_and_resize_face
 def get_encodings(np_image, face_locations=None):
     """
     Generate face encodings for a given image and face locations.
-
+    
     Parameters:
     np_image (numpy.ndarray): The image in NumPy array format.
     face_locations (list): Pre-detected face locations, if available.

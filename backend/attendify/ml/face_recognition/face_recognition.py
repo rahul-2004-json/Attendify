@@ -20,7 +20,7 @@ def get_encodings(np_image):
     if not face_encodings:
         return None
     
-    print("Encodings found");
+    print("Encodings found")
 
     return face_encodings[0]  # Return the first (and assumed only) face encoding
 

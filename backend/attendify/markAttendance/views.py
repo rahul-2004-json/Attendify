@@ -95,7 +95,7 @@ def process_detection(detection):
     return recognized_students
 
 
-def find_matching_student(face_encoding):
+def find_matching_student(face_encoding, tolerance=0.55):
     """
     Matches a given face encoding with student records in the database and selects the student
     with the highest similarity (lowest face distance).
@@ -112,20 +112,33 @@ def find_matching_student(face_encoding):
         # Get the minimum distance for this student
         min_distance = min(distances)
 
-        # Update best_match if this student has the closest match so far
-        if min_distance < lowest_distance:
-            lowest_distance = min_distance
+        if min_distance < tolerance:
             best_match = {
                 "enrollment": student["enrollment"],
                 "name": student["name"],
                 "batch": student["batch"],
                 "distance": min_distance
             }
+            lowest_distance = min_distance
 
-    print(f"Best match: {best_match}, Distance: {lowest_distance}")
+            break
+    
+        # # Update best_match if this student has the closest match so far
+        # if min_distance < lowest_distance:
+        #     lowest_distance = min_distance
+        #     best_match = {
+        #         "enrollment": student["enrollment"],
+        #         "name": student["name"],
+        #         "batch": student["batch"],
+        #         "distance": min_distance
+        #     }
+
 
     # Check if a sufficiently close match was found
-    if best_match and lowest_distance <= 0.55:  # Adjust tolerance as needed
+    # if best_match and lowest_distance <= 0.55:  # Adjust tolerance as needed
+    #     return best_match
+    if best_match:
+        print(f"Best match: {best_match}, Distance: {lowest_distance}")
         return best_match
     else:
         return None  # Return None if no match within tolerance is found    

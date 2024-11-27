@@ -29,9 +29,11 @@ google-pasta==0.2.0
 grpcio==1.67.1
 h5py==3.12.1
 idna==3.10
+imageio==2.36.0
 Jinja2==3.1.4
 keras==3.6.0
 kiwisolver==1.4.7
+lazy_loader==0.4
 libclang==18.1.1
 Markdown==3.7
 markdown-it-py==3.0.0
@@ -58,6 +60,7 @@ python-dotenv==1.0.1
 pytz==2024.2
 requests==2.32.3
 rich==13.9.4
+scikit-image==0.24.0
 scipy==1.14.1
 setuptools==75.2.0
 six==1.16.0
@@ -68,6 +71,7 @@ tensorboard-data-server==0.7.2
 tensorflow==2.18.0
 tensorflow_intel==2.18.0
 termcolor==2.5.0
+tifffile==2024.9.20
 torch==2.4.1
 torchvision==0.19.1
 typing_extensions==4.12.2

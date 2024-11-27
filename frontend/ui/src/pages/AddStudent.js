@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { TbCirclePlus } from "react-icons/tb";
 import { FaImages, FaFolderOpen } from "react-icons/fa";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { PiStudentBold } from "react-icons/pi";
 import axios from "axios";
 import { Hourglass } from "react-loader-spinner";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const AddStudent = () => {
@@ -25,8 +25,7 @@ const AddStudent = () => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [selectedStudentIndex, setSelectedStudentIndex] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {}, [isLoading]);
+  const [formbranch, setFormBranch] = useState("CSE");
 
   const notifySuccess = () =>
     toast.success(
@@ -185,7 +184,7 @@ const AddStudent = () => {
             colors={["#3949ab", "#667eea"]}
           />
           <h1 className="flex flex-col text-center text-2xl font-bold mt-5">
-            Hold on! 
+            Hold on!
             <span>Adding students...</span>
           </h1>
         </div>
@@ -266,6 +265,23 @@ const AddStudent = () => {
                 <p className="text-red-600 mb-2 -mt-2">{formErrors.enroll}</p>
               )}
               <select
+                name="branch"
+                value={newStudent.branch}
+                onChange={(e) => {
+                  handleInputChange(e);
+                  setFormBranch(e.target.value);
+                }}
+                className="w-full p-2 mb-2 border rounded"
+                required
+              >
+                <option value="">Select Branch</option>
+                <option value="ECE">ECE</option>
+                <option value="CSE">CSE</option>
+              </select>
+              {formErrors.branch && (
+                <p className="text-red-600 mb-4 -mt-2">{formErrors.branch}</p>
+              )}
+              <select
                 name="batch"
                 value={newStudent.batch}
                 onChange={handleInputChange}
@@ -275,8 +291,11 @@ const AddStudent = () => {
                 <option value="">Select Batch</option>
                 {[...Array(9)].map((_, i) => (
                   <React.Fragment key={`batch-${i}`}>
-                    <option value={`F${i + 1}`}>F{i + 1}</option>
-                    <option value={`E${i + 1}`}>E{i + 1}</option>
+                    {formbranch === "CSE" ? (
+                      <option value={`F${i + 1}`}>F{i + 1}</option>
+                    ) : (
+                      <option value={`E${i + 1}`}>E{i + 1}</option>
+                    )}
                   </React.Fragment>
                 ))}
               </select>
@@ -299,20 +318,6 @@ const AddStudent = () => {
               </select>
               {formErrors.year && (
                 <p className="text-red-600 mb-2 -mt-2">{formErrors.year}</p>
-              )}
-              <select
-                name="branch"
-                value={newStudent.branch}
-                onChange={handleInputChange}
-                className="w-full p-2 mb-2 border rounded"
-                required
-              >
-                <option value="">Select Branch</option>
-                <option value="ECE">ECE</option>
-                <option value="CSE">CSE</option>
-              </select>
-              {formErrors.branch && (
-                <p className="text-red-600 mb-4 -mt-2">{formErrors.branch}</p>
               )}
               {/* Hidden file input */}
               <input

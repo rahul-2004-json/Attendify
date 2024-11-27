@@ -20,7 +20,7 @@ import os
 # environ.Env.read_env()
 
 
-
+DATA_UPLOAD_MAX_MEMORY_SIZE = None
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

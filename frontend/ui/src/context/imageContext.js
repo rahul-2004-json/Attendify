@@ -1,7 +1,5 @@
 import React, { createContext, useState } from "react";
-
 export const ImageContext = createContext(null);
-
 export default function ImageState({ children }) {
   const [imagesArray, setImagesArray] = useState([]);
   const [forwardImages, setforwardImages] = useState([]);

@@ -45,27 +45,23 @@ export default function StudentState({ children }) {
     return new Promise((resolve) => setTimeout(resolve, 2000));
   };
 
-  const handleCsvChange = (e) => {
-    setLoading(true);
+  const handleCsvChange = async (e) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       const fileType = file.name.split(".").pop().toLowerCase();
       setCsvFile([file]);
 
+      let parsedData = [];
+
       if (fileType === "csv") {
         Papa.parse(file, {
           header: true,
           skipEmptyLines: true,
-          complete: (results) => {
-            const data = results.data.map((row) => ({
-              name: row.Name,
-              enrollment: row.Enrollment,
-              year: row.Year,
-              batch: row.Batch,
-              present: row.Present,
+          complete: async (results) => {
+            parsedData = results.data.map((row) => ({
+              enrollment: parseInt(row.Enrollment, 10), 
             }));
-            setParsedData(data);
-            // notifySuccess();
+            setParsedData(parsedData);
           },
           error: (error) => {
             notifyError();
@@ -74,22 +70,17 @@ export default function StudentState({ children }) {
         });
       } else if (fileType === "xls" || fileType === "xlsx") {
         const reader = new FileReader();
-        reader.onload = (event) => {
+        reader.onload = async (event) => {
           const data = new Uint8Array(event.target.result);
           const workbook = XLSX.read(data, { type: "array" });
           const sheetName = workbook.SheetNames[0];
           const sheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: "" });
 
-          const formattedData = jsonData.map((row) => ({
-            name: row.Name,
-            enrollment: row.Enrollment,
-            year: row.Year,
-            batch: row.Batch,
-            present: row.Present,
+          parsedData = jsonData.map((row) => ({
+            enrollment: parseInt(row.Enrollment, 10), 
           }));
-          setParsedData(formattedData);
-          // notifySuccess();
+          setParsedData(parsedData);
         };
         reader.onerror = (error) => {
           notifyError();
@@ -104,7 +95,33 @@ export default function StudentState({ children }) {
       notifyNofile();
       console.error("No files selected");
     }
-    setLoading(false);
+  };
+
+  const fetchStudents = async (parsedData) => {
+    try {
+      const response = await axios.post(
+        "/api/getAttendanceList/fetch_from_csv/",
+        {
+          enrollments: parsedData.map((data) => data.enrollment),
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        // Handle success response
+        console.log("Students data:", response.data.students);
+        setStudents(response.data.students);
+      } else {
+        // Handle error response
+        console.error("Error fetching students data:", response.data.error);
+      }
+    } catch (error) {
+      console.error("Error fetching students data:", error);
+    }
   };
 
   const handleNextform = async () => {
@@ -143,17 +160,20 @@ export default function StudentState({ children }) {
     }
   };
 
-  const handleNextCSV = () => {
+  const handleNextCSV = async () => {
     if (parsedData.length === 0) {
       notifyNofile();
     } else {
+      setLoading(true);
+      await fetchStudents(parsedData);
+      setLoading(false);
       notifySuccess();
+      // setStudents(parsedData);
+      setCsvFile([]);
     }
-    setStudents(parsedData);
-    setCsvFile([]);
   };
 
-  // console.log("from context:",students);
+  console.log("from context:", students);
 
   return (
     <StudentsContext.Provider
@@ -162,6 +182,7 @@ export default function StudentState({ children }) {
         handleCsvChange,
         handleNextform,
         handleNextCSV,
+        setLoading,
         loading,
         csvFile,
         setCsvFile,

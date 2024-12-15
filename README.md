@@ -1,5 +1,8 @@
-# Attendify (In Progress)
+# Attendify
 Attendify is an ML-driven attendance automation system aimed at simplifying and modernizing attendance tracking in educational institutions. By leveraging facial recognition technology, Attendify automates the process of marking attendance, eliminating manual effort and reducing errors. Teachers can upload images of students, and the system processes these images to detect and recognize faces, automatically updating the attendance records.
+
+## Demo
+https://github.com/user-attachments/assets/f370b136-36ff-48a2-a45b-af0110b20677
 
 ## Features
 
